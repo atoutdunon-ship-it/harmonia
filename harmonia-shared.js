@@ -1780,21 +1780,6 @@ try { applyMaintenanceMode(); } catch(e) {}
   if (changed) saveData(DB);
 })();
 
-(function migrateAlbumDescI18n() {
-  if (DB._mediaV >= 10) return;
-  var defs = defaultAlbums();
-  var changed = false;
-  defs.forEach(function(def) {
-    var stored = (DB.albums||[]).find(function(a){ return a.id === def.id; });
-    if (!stored) return;
-    if (def.desc_pt && stored.desc_pt !== def.desc_pt) { stored.desc_pt = def.desc_pt; changed = true; }
-    if (def.desc_en && stored.desc_en !== def.desc_en) { stored.desc_en = def.desc_en; changed = true; }
-    if (def.desc_es && stored.desc_es !== def.desc_es) { stored.desc_es = def.desc_es; changed = true; }
-  });
-  DB._mediaV = 10;
-  if (changed) saveData(DB);
-})();
-
 (function migrateNews() {
   var defs = defaultNews();
   var defsMap = {};
@@ -2712,10 +2697,7 @@ function defaultAlbums() {
      ],
      cover:"images/artists/elida/albums/ora-doci-ora-margos.jpg",
      spotify:"https://open.spotify.com/album/3W6Z99HNpY4YW6jJafsfKa",
-     desc:"L'album révélation qui a propulsé Elida sur la scène mondiale. Treize titres de tabanka, funaná et batuque mêlés de textures contemporaines.",
-     desc_pt:"O álbum revelação que projetou Elida na cena mundial. Treze títulos de tabanka, funaná e batuque com texturas contemporâneas.",
-     desc_en:"The breakthrough album that launched Elida onto the world stage. Thirteen tracks of tabanka, funaná and batuque woven with contemporary textures.",
-     desc_es:"El álbum revelación que lanzó a Elida a la escena mundial. Trece títulos de tabanka, funaná y batuque con texturas contemporáneas."},
+     desc:"L'album révélation qui a propulsé Elida sur la scène mondiale. Treize titres de tabanka, funaná et batuque mêlés de textures contemporaines."},
     {id:2, title:"Elida", artist:"Elida Almeida", year:2017, genre:"Tabanka · Funaná",
      label:"Lusafrica", tracks:7, ep:true,
      tracklist:[
@@ -2729,10 +2711,7 @@ function defaultAlbums() {
      ],
      cover:"images/artists/elida/albums/djunta-kudjer.jpg",
      spotify:"https://open.spotify.com/album/6NW7ppRKAqZIZ6vuHDdHz9",
-     desc:"EP 7 titres enregistré au Cap-Vert — tabanka électrique et batuque organique avec une liberté créative rare.",
-     desc_pt:"EP de 7 títulos gravado em Cabo Verde — tabanka elétrica e batuque orgânico com uma liberdade criativa rara.",
-     desc_en:"7-track EP recorded in Cape Verde — electric tabanka and organic batuque with rare creative freedom.",
-     desc_es:"EP de 7 títulos grabado en Cabo Verde — tabanka eléctrica y batuque orgánico con una libertad creativa excepcional."},
+     desc:"EP 7 titres enregistré au Cap-Vert — tabanka électrique et batuque organique avec une liberté créative rare."},
     {id:18, title:"Kebrada", artist:"Elida Almeida", year:2017, genre:"Tabanka · Funaná · Batuque",
      label:"Lusafrica", tracks:12,
      tracklist:[
@@ -2751,10 +2730,7 @@ function defaultAlbums() {
      ],
      cover:"images/artists/elida/albums/kebrada.jpg",
      spotify:"https://open.spotify.com/album/7tHEpTdG6hMm2qDkVnU9eB",
-     desc:"Avec Kebrada, Elida s'impose sur la scène internationale — funaná électrique et batuque organique en parfaite symbiose.",
-     desc_pt:"Com Kebrada, Elida afirma-se na cena internacional — funaná elétrico e batuque orgânico em perfeita simbiose.",
-     desc_en:"With Kebrada, Elida establishes herself on the international stage — electric funaná and organic batuque in perfect symbiosis.",
-     desc_es:"Con Kebrada, Elida se impone en la escena internacional — funaná eléctrico y batuque orgánico en perfecta simbiosis."},
+     desc:"Avec Kebrada, Elida s'impose sur la scène internationale — funaná électrique et batuque organique en parfaite symbiose."},
     {id:19, title:"Gerasonobu", artist:"Elida Almeida", year:2020, genre:"Tabanka · Funaná · Batuque",
      label:"HARMONIA / Lusafrica", tracks:13,
      tracklist:[
@@ -2774,10 +2750,7 @@ function defaultAlbums() {
      ],
      cover:"images/artists/elida/albums/gerasonobu.jpg",
      spotify:"https://open.spotify.com/album/5AeJlWLUvmRWkYsxqK5MTd",
-     desc:"Un album lumineux enregistré entre Cabo Verde et Lisbonne. Elida y explore de nouveaux territoires sonores sans jamais perdre son ancrage dans la tradition.",
-     desc_pt:"Um álbum luminoso gravado entre Cabo Verde e Lisboa. Elida explora novos territórios sonoros sem nunca perder o seu enraizamento na tradição.",
-     desc_en:"A luminous album recorded between Cape Verde and Lisbon. Elida explores new sonic territories without ever losing her roots in tradition.",
-     desc_es:"Un álbum luminoso grabado entre Cabo Verde y Lisboa. Elida explora nuevos territorios sonoros sin perder nunca su arraigo en la tradición."},
+     desc:"Un album lumineux enregistré entre Cabo Verde et Lisbonne. Elida y explore de nouveaux territoires sonores sans jamais perdre son ancrage dans la tradition."},
     {id:20, title:"Di Lonji", artist:"Elida Almeida", year:2023, genre:"Tabanka · Funaná · Batuque",
      label:"HARMONIA / Lusafrica", tracks:14,
      tracklist:[
@@ -2798,10 +2771,7 @@ function defaultAlbums() {
      ],
      cover:"images/artists/elida/albums/di-lonji.jpg",
      spotify:"https://open.spotify.com/album/0kb93KvSbYc3FNm06kVzLm",
-     desc:"Di Lonji (De loin) — un album de la saudade et du retour, où Elida chante la distance, l'identité et l'amour avec une maturité artistique bouleversante.",
-     desc_pt:"Di Lonji (De longe) — um álbum da saudade e do regresso, onde Elida canta a distância, a identidade e o amor com uma maturidade artística arrebatadora.",
-     desc_en:"Di Lonji (From Afar) — an album of longing and return, where Elida sings distance, identity and love with breathtaking artistic maturity.",
-     desc_es:"Di Lonji (De lejos) — un álbum de la saudade y el regreso, donde Elida canta la distancia, la identidad y el amor con una madurez artística conmovedora."},
+     desc:"Di Lonji (De loin) — un album de la saudade et du retour, où Elida chante la distance, l'identité et l'amour avec une maturité artistique bouleversante."},
     {id:21, title:"Spedju", artist:"Elida Almeida", year:2026, genre:"Funaná · Batuque",
      label:"HARMONIA", tracks:13,
      tracklist:[
@@ -2821,10 +2791,7 @@ function defaultAlbums() {
      ],
      cover:"images/artists/elida/albums/spedju.jpg",
      spotify:"https://open.spotify.com/album/6kPGBvbOREXIRGYjhWrDbQ",
-     desc:"Spedju (Miroir) — 13 titres, funaná et batuque au sommet de leur art. Le sixième album d'Elida Almeida, son premier sous le label HARMONIA.",
-     desc_pt:"Spedju (Espelho) — 13 títulos, funaná e batuque no apogeu da sua arte. O sexto álbum de Elida Almeida, o primeiro sob o selo HARMONIA.",
-     desc_en:"Spedju (Mirror) — 13 tracks, funaná and batuque at the peak of their art. Elida Almeida's sixth album, her first under the HARMONIA label.",
-     desc_es:"Spedju (Espejo) — 13 títulos, funaná y batuque en la cima de su arte. El sexto álbum de Elida Almeida, el primero bajo el sello HARMONIA."},
+     desc:"Spedju (Miroir) — 13 titres, funaná et batuque au sommet de leur art. Le sixième album d'Elida Almeida, son premier sous le label HARMONIA."},
 
     {id:22, title:"Undel",         artist:"Elida Almeida", year:2025, genre:"Funaná", label:"HARMONIA",   tracks:1, ep:true, disabled:true, cover:"", spotify:"https://open.spotify.com/album/28VUGPWANCtGf5ViOTIr9N", desc:"Single 2025 — Harmonia.",                              tracklist:[{title:"Undel",                                      spotify:"https://open.spotify.com/album/28VUGPWANCtGf5ViOTIr9N"}]},
     {id:23, title:"Alebi",         artist:"Elida Almeida", year:2024, genre:"Funaná", label:"Lusafrica",  tracks:1, ep:true, disabled:true, cover:"", spotify:"https://open.spotify.com/album/4y1OfdJbqUn6dgdKAusmzA", desc:"Single 2024 — Lusafrica.",                              tracklist:[{title:"Alebi",                                      spotify:"https://open.spotify.com/track/2qodS9mzjNJkEUjJXBz5Ze"}]},
@@ -2839,97 +2806,52 @@ function defaultAlbums() {
     {id:32, title:"É Zonban",      artist:"Elida Almeida", year:2017, genre:"Funaná", label:"Lusafrica",  tracks:1, ep:true, disabled:true, cover:"", spotify:"https://open.spotify.com/album/2bDlASBZvF5T6voUAjzEkh", desc:"Single 2017 (feat. Djodje) — Lusafrica.",               tracklist:[{title:"É Zonban (feat. Djodje)",                    spotify:"https://open.spotify.com/track/6wegUrMvR0zAL2TgXWoHff"}]},
     {id:3, title:"Nha Vida", artist:"Ceuzany", year:2012, genre:"Morna · Coladeira",
      label:"HARMONIA / Lusafrica", tracks:10, cover:"https://img.youtube.com/vi/chbNmmhoKuM/hqdefault.jpg",
-     desc:"Le premier album solo de Ceuzany. 'Último Chance' s'impose comme un classique instantané. La voix de São Vicente s'envole vers l'Europe.",
-     desc_pt:"O primeiro álbum a solo de Ceuzany. 'Último Chance' impõe-se como um clássico instantâneo. A voz de São Vicente voa para a Europa.",
-     desc_en:"Ceuzany's debut solo album. 'Último Chance' became an instant classic. The voice of São Vicente takes flight towards Europe.",
-     desc_es:"El primer álbum en solitario de Ceuzany. 'Último Chance' se convierte en un clásico instantáneo. La voz de São Vicente vuela hacia Europa."},
+     desc:"Le premier album solo de Ceuzany. 'Último Chance' s'impose comme un classique instantané. La voix de São Vicente s'envole vers l'Europe."},
     {id:4, title:"Ilha d'Melodia", artist:"Ceuzany", year:2016, genre:"Morna · Funaná",
      label:"HARMONIA / Lusafrica", tracks:11, cover:"https://img.youtube.com/vi/x30kc8zgbm0/hqdefault.jpg",
-     desc:"Mindelo transformé en musique et en mémoire. Un disque d'une intimité bouleversante où tradition et modernité fusionnent dans une même âme.",
-     desc_pt:"Mindelo transformado em música e memória. Um disco de uma intimidade comovente onde tradição e modernidade se fundem numa mesma alma.",
-     desc_en:"Mindelo transformed into music and memory. A record of moving intimacy where tradition and modernity fuse in a single soul.",
-     desc_es:"Mindelo transformado en música y memoria. Un disco de una intimidad conmovedora donde tradición y modernidad se funden en una misma alma."},
+     desc:"Mindelo transformé en musique et en mémoire. Un disque d'une intimité bouleversante où tradition et modernité fusionnent dans une même âme."},
     {id:5, title:"Laço Umbilical", artist:"Lucibela", year:2018, genre:"Morna · Coladeira",
      label:"HARMONIA", tracks:10, cover:"https://img.youtube.com/vi/CWjpLxduC24/hqdefault.jpg",
-     desc:"Le disque événement qui a projeté Lucibela dans les plus grands festivals mondiaux. La morna dans toute sa splendeur, portée par une voix de velours rare.",
-     desc_pt:"O disco evento que projetou Lucibela nos maiores festivais mundiais. A morna em toda a sua esplendor, sustentada por uma voz de veludo rara.",
-     desc_en:"The landmark album that launched Lucibela into the world's greatest festivals. Morna in all its splendour, carried by a rare velvet voice.",
-     desc_es:"El disco evento que proyectó a Lucibela en los mayores festivales mundiales. La morna en todo su esplendor, sostenida por una voz de terciopelo excepcional."},
+     desc:"Le disque événement qui a projeté Lucibela dans les plus grands festivals mondiaux. La morna dans toute sa splendeur, portée par une voix de velours rare."},
     {id:6, title:"Aura", artist:"Lucibela", year:2021, genre:"Morna · Coladeira",
      label:"HARMONIA", tracks:12, cover:"https://img.youtube.com/vi/7NUbNjBakOY/hqdefault.jpg",
-     desc:"Lucibela confirme son statut de grande voix de la morna contemporaine. Un album de maturité, lumineux et profond, salué par la critique internationale.",
-     desc_pt:"Lucibela confirma o seu estatuto de grande voz da morna contemporânea. Um álbum de maturidade, luminoso e profundo, aclamado pela crítica internacional.",
-     desc_en:"Lucibela confirms her status as a great voice of contemporary morna. A mature album, luminous and profound, acclaimed by international critics.",
-     desc_es:"Lucibela confirma su estatus de gran voz de la morna contemporánea. Un álbum de madurez, luminoso y profundo, aclamado por la crítica internacional."},
+     desc:"Lucibela confirme son statut de grande voix de la morna contemporaine. Un album de maturité, lumineux et profond, salué par la critique internationale."},
     {id:7, title:"Flor di Bila", artist:"Neuza de Pina", year:2013, genre:"Talaia Baxo · Rabolo · Samba",
      label:"HARMONIA", tracks:11, cover:"https://img.youtube.com/vi/naQ1EqomsWc/hqdefault.jpg",
-     desc:"Les secrets musicaux de l'île do Fogo révélés au monde. Neuza de Pina porte les rythmes ancestraux du volcan avec une voix douce et une âme immense.",
-     desc_pt:"Os segredos musicais da ilha do Fogo revelados ao mundo. Neuza de Pina carrega os ritmos ancestrais do vulcão com uma voz suave e uma alma imensa.",
-     desc_en:"The musical secrets of Fogo island revealed to the world. Neuza de Pina carries the ancestral rhythms of the volcano with a gentle voice and an immense soul.",
-     desc_es:"Los secretos musicales de la isla del Fogo revelados al mundo. Neuza de Pina lleva los ritmos ancestrales del volcán con una voz suave y un alma inmensa."},
+     desc:"Les secrets musicaux de l'île do Fogo révélés au monde. Neuza de Pina porte les rythmes ancestraux du volcan avec une voix douce et une âme immense."},
     {id:8, title:"Badia di Fogo", artist:"Neuza de Pina", year:2018, genre:"Funaná · Batuque",
      label:"HARMONIA", tracks:9, cover:"https://img.youtube.com/vi/6jOgf4ihD8g/hqdefault.jpg",
-     desc:"Quatre compositions personnelles dont 'Izilda', hommage bouleversant à sa mère disparue. Neuza de Pina signe son album le plus intime.",
-     desc_pt:"Quatro composições pessoais, incluindo 'Izilda', uma homenagem comovente à sua mãe falecida. Neuza de Pina assina o seu álbum mais íntimo.",
-     desc_en:"Four personal compositions including 'Izilda', a moving tribute to her late mother. Neuza de Pina's most intimate album.",
-     desc_es:"Cuatro composiciones personales, incluida 'Izilda', un homenaje conmovedor a su madre fallecida. El álbum más íntimo de Neuza de Pina."},
+     desc:"Quatre compositions personnelles dont 'Izilda', hommage bouleversant à sa mère disparue. Neuza de Pina signe son album le plus intime."},
     {id:9, title:"Um Cálice d'Nha Terra", artist:"Fábio Ramos", year:2022, genre:"Morna · Coladeira",
      label:"HARMONIA", tracks:10, cover:"https://img.youtube.com/vi/Jjfv6n5Og_g/hqdefault.jpg",
-     desc:"L'enfant de Mindelo rend hommage à sa ville avec une sincérité désarmante. Morna pure, saudade authentique — la voix d'une cité qui ne s'oublie jamais.",
-     desc_pt:"O filho de Mindelo presta homenagem à sua cidade com uma sinceridade desarmante. Morna pura, saudade autêntica — a voz de uma cidade que nunca se esquece.",
-     desc_en:"Mindelo's son pays tribute to his city with disarming sincerity. Pure morna, authentic saudade — the voice of a city that is never forgotten.",
-     desc_es:"El hijo de Mindelo rinde homenaje a su ciudad con una sinceridad desarmante. Morna pura, saudade auténtica — la voz de una ciudad que nunca se olvida."},
+     desc:"L'enfant de Mindelo rend hommage à sa ville avec une sincérité désarmante. Morna pure, saudade authentique — la voix d'une cité qui ne s'oublie jamais."},
     {id:10, title:"Solidade", artist:"Jenifer Solidade", year:2019, genre:"Morna · Coladeira",
      label:"HARMONIA / Lusafrica", tracks:11, cover:"",
      spotify:"https://open.spotify.com/intl-fr/artist/7FAutlaokOl6lePZDdTEgs",
-     desc:"Premier album solo de Jenifer Solidade, révélation de Mindelo. Onze titres entre morna lancinante et coladeira sensuelle, portés par une voix qui tutoie les grands noms de Cabo Verde.",
-     desc_pt:"Primeiro álbum a solo de Jenifer Solidade, revelação de Mindelo. Onze títulos entre morna lancinante e coladeira sensual, sustentados por uma voz que rivaliza com os grandes nomes de Cabo Verde.",
-     desc_en:"Jenifer Solidade's debut solo album, Mindelo's revelation. Eleven tracks of haunting morna and sensual coladeira, carried by a voice that rivals the great names of Cape Verde.",
-     desc_es:"Primer álbum en solitario de Jenifer Solidade, revelación de Mindelo. Once títulos entre morna desgarradora y coladeira sensual, sostenidos por una voz que rivaliza con los grandes nombres de Cabo Verde."},
+     desc:"Premier album solo de Jenifer Solidade, révélation de Mindelo. Onze titres entre morna lancinante et coladeira sensuelle, portés par une voix qui tutoie les grands noms de Cabo Verde."},
     {id:11, title:"Live Session", artist:"Jenifer Solidade", year:2022, genre:"Soul · Funaná",
      label:"HARMONIA", tracks:4, cover:"",
-     desc:"Captation intime enregistrée aux studios HARMONIA à Lisbonne. Jenifer Solidade y réinterprète ses classiques et dévoile trois inédits avec son quartet acoustique.",
-     desc_pt:"Captação íntima gravada nos estúdios HARMONIA em Lisboa. Jenifer Solidade reinterpreta os seus clássicos e revela três inéditos com o seu quarteto acústico.",
-     desc_en:"Intimate recording made at HARMONIA studios in Lisbon. Jenifer Solidade reinterprets her classics and unveils three unreleased tracks with her acoustic quartet.",
-     desc_es:"Grabación íntima realizada en los estudios HARMONIA de Lisboa. Jenifer Solidade reinterpreta sus clásicos y desvela tres inéditos con su cuarteto acústico."},
+     desc:"Captation intime enregistrée aux studios HARMONIA à Lisbonne. Jenifer Solidade y réinterprète ses classiques et dévoile trois inédits avec son quartet acoustique."},
 
     {id:12, title:"Sabi / Adax", artist:"Elly Paris", year:2023, genre:"Urban · Pop · R&B",
      label:"HARMONIA", tracks:3, cover:"https://img.youtube.com/vi/HRnSlprhbIQ/hqdefault.jpg",
-     desc:"Double single qui confirme la voix distincte d'Elly Paris — groove urbain, énergie pop et créole dans une production contemporaine parfaitement ciselée.",
-     desc_pt:"Duplo single que confirma a voz distinta de Elly Paris — groove urbano, energia pop e crioulo numa produção contemporânea perfeitamente lapidada.",
-     desc_en:"Double single confirming Elly Paris's distinctive voice — urban groove, pop energy and Creole in a perfectly crafted contemporary production.",
-     desc_es:"Doble single que confirma la voz distintiva de Elly Paris — groove urbano, energía pop y criollo en una producción contemporánea perfectamente elaborada."},
+     desc:"Double single qui confirme la voix distincte d'Elly Paris — groove urbain, énergie pop et créole dans une production contemporaine parfaitement ciselée."},
     {id:13, title:"Momento", artist:"Indira", year:2023, genre:"R&B · Soul",
      label:"HARMONIA", tracks:3, cover:"",
-     desc:"Premier EP d'Indira, révélation R&B cap-verdienne — trois titres qui installent une présence vocale inoubliable, à mi-chemin entre soul américaine et culture des îles.",
-     desc_pt:"Primeiro EP de Indira, revelação R&B cabo-verdiana — três títulos que estabelecem uma presença vocal inesquecível, a meio caminho entre a soul americana e a cultura das ilhas.",
-     desc_en:"Indira's debut EP, Cape Verde's R&B revelation — three tracks establishing an unforgettable vocal presence, halfway between American soul and island culture.",
-     desc_es:"Primer EP de Indira, revelación R&B caboverdiana — tres títulos que establecen una presencia vocal inolvidable, a medio camino entre el soul americano y la cultura de las islas."},
+     desc:"Premier EP d'Indira, révélation R&B cap-verdienne — trois titres qui installent une présence vocale inoubliable, à mi-chemin entre soul américaine et culture des îles."},
     {id:14, title:"We Vibe", artist:"Ley Lazz", year:2024, genre:"Urban · Afrobeat · R&B",
      label:"HARMONIA", tracks:3, cover:"https://img.youtube.com/vi/NDqCs1c7eYU/hqdefault.jpg",
-     desc:"EP debut de Ley Lazz — Afrobeat cap-verdien aux couleurs des meilleurs dancefloors de Lisbonne à Paris, entre groove Afro et énergie R&B contemporain.",
-     desc_pt:"EP de estreia de Ley Lazz — Afrobeat cabo-verdiano com as cores das melhores pistas de dança de Lisboa a Paris, entre groove Afro e energia R&B contemporâneo.",
-     desc_en:"Ley Lazz's debut EP — Cape Verdean Afrobeat with the colours of the best dancefloors from Lisbon to Paris, between Afro groove and contemporary R&B energy.",
-     desc_es:"EP debut de Ley Lazz — Afrobeat caboverdiano con los colores de las mejores pistas de baile de Lisboa a París, entre groove Afro y energía R&B contemporáneo."},
+     desc:"EP debut de Ley Lazz — Afrobeat cap-verdien aux couleurs des meilleurs dancefloors de Lisbonne à Paris, entre groove Afro et énergie R&B contemporain."},
     {id:15, title:"Diskulpam", artist:"Mureno", year:2023, genre:"R&B · Kizomba",
      label:"HARMONIA", tracks:3, cover:"https://img.youtube.com/vi/7HorxxeTgNs/hqdefault.jpg",
-     desc:"Premier EP de Mureno — kizomba sensuelle, R&B profond et voix grave d'un artiste à l'émotion authentique qui sait marier douceur et puissance.",
-     desc_pt:"Primeiro EP de Mureno — kizomba sensual, R&B profundo e voz grave de um artista de emoção autêntica que sabe casar suavidade e potência.",
-     desc_en:"Mureno's debut EP — sensual kizomba, deep R&B and a low voice from an artist of authentic emotion who knows how to marry gentleness and power.",
-     desc_es:"Primer EP de Mureno — kizomba sensual, R&B profundo y voz grave de un artista de emoción auténtica que sabe unir suavidad y potencia."},
+     desc:"Premier EP de Mureno — kizomba sensuelle, R&B profond et voix grave d'un artiste à l'émotion authentique qui sait marier douceur et puissance."},
     {id:16, title:"Maria", artist:"Neguinho Tivane", year:2025, genre:"R&B · Soul · Afrobeat",
      label:"HARMONIA", tracks:3, cover:"",
-     desc:"L'amour authentique chanté avec une sincérité bouleversante — Neguinho Tivane confirme un talent rare pour toucher les émotions les plus profondes.",
-     desc_pt:"O amor autêntico cantado com uma sinceridade comovente — Neguinho Tivane confirma um talento raro para tocar as emoções mais profundas.",
-     desc_en:"Authentic love sung with moving sincerity — Neguinho Tivane confirms a rare talent for touching the deepest emotions.",
-     desc_es:"El amor auténtico cantado con una sinceridad conmovedora — Neguinho Tivane confirma un talento excepcional para tocar las emociones más profundas."},
+     desc:"L'amour authentique chanté avec une sincérité bouleversante — Neguinho Tivane confirme un talent rare pour toucher les émotions les plus profondes."},
     {id:17, title:"Pa Bo", artist:"Sonia Sousa", year:2022, genre:"R&B · Funk · Soul",
      label:"HARMONIA", tracks:3, cover:"https://img.youtube.com/vi/5v_1jMCkFUE/hqdefault.jpg",
      spotify:"https://open.spotify.com/intl-fr/artist/6vYZ29NTfmd4Z4mpde2uNk",
-     desc:"L'EP révélation de Sonia Sousa — groove cap-verdien, créole vibrant et une voix R&B de référence dans l'espace lusophone, entre funk et soul intemporel.",
-     desc_pt:"O EP revelação de Sonia Sousa — groove cabo-verdiano, crioulo vibrante e uma voz R&B de referência no espaço lusófono, entre funk e soul atemporal.",
-     desc_en:"Sonia Sousa's breakthrough EP — Cape Verdean groove, vibrant Creole and a reference R&B voice in the Lusophone world, between timeless funk and soul.",
-     desc_es:"El EP revelación de Sonia Sousa — groove caboverdiano, criollo vibrante y una voz R&B de referencia en el espacio lusófono, entre funk y soul atemporal."}
+     desc:"L'EP révélation de Sonia Sousa — groove cap-verdien, créole vibrant et une voix R&B de référence dans l'espace lusophone, entre funk et soul intemporel."}
   ];
 }
 
@@ -4762,13 +4684,6 @@ function _artistBio(a, field) {
   if (currentLang === 'fr') return a[field] || '';
   return a[field + '_en'] || a[field] || '';
 }
-function _albumDesc(al) {
-  var lang = (typeof currentLang !== 'undefined' && currentLang) || 'fr';
-  var langDesc = al['desc_' + lang];
-  if (langDesc) return langDesc;
-  if (lang === 'fr') return al.desc || '';
-  return al.desc_en || al.desc || '';
-}
 
 function renderArtists() {
   const grid = document.getElementById('artists-grid');
@@ -4905,7 +4820,7 @@ function openArtistModal(id) {
             + '<div class="disco-album-info">'
             + '<div class="disco-album-title">' + esc(al.title) + '</div>'
             + '<div class="disco-album-year">' + yearLabel + '</div>'
-            + (_albumDesc(al) ? '<div class="disco-album-desc">' + esc(_albumDesc(al)) + '</div>' : '')
+            + (al.desc ? '<div class="disco-album-desc">' + esc(al.desc) + '</div>' : '')
             + (streamLinks ? '<div class="disco-stream-row">' + streamLinks + '</div>' : '')
             + '</div>'
             + (hasTracks ? '<span class="disco-album-chevron">▾</span>' : '')
@@ -8943,7 +8858,7 @@ function openArtistPage(id) {
         +   '<div class="ap-album-meta">'
         +     '<div class="ap-album-title-acc">'+esc(al.title)+'</div>'
         +     '<div class="ap-album-sub">'+al.year+' · '+esc(al.genre||'')+(al.label?' · '+esc(al.label):'')+'</div>'
-        +     (_albumDesc(al) ? '<div class="ap-album-desc-acc">'+esc(_albumDesc(al))+'</div>' : '')
+        +     (al.desc ? '<div class="ap-album-desc-acc">'+esc(al.desc)+'</div>' : '')
         +   '</div>'
         +   '<div class="ap-album-links">'
         +     (function(){ var _spUrl = al.spotify || a.spotify || '';
