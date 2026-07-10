@@ -1550,6 +1550,28 @@ if (!DB.modules)        { DB.modules = defaultModules(); saveData(DB); }
   saveData(DB);
 })();
 if (!DB.pageTexts)   { DB.pageTexts = {}; saveData(DB); }
+
+// Migration — suppression mentions Voxial stockées en pageTexts
+(function _cleanVoxialFromPageTexts() {
+  if (!DB.pageTexts) return;
+  var changed = false;
+  Object.keys(DB.pageTexts).forEach(function(k) {
+    // Supprimer footer_credits complètement
+    if (k === 'footer_credits' || k.indexOf(':footer_credits') !== -1) {
+      delete DB.pageTexts[k]; changed = true; return;
+    }
+    // Nettoyer footer_legal de toute mention Voxial
+    if ((k === 'footer_legal' || k.indexOf(':footer_legal') !== -1) && DB.pageTexts[k]) {
+      var v = DB.pageTexts[k];
+      if (/voxial/i.test(v)) {
+        // Supprimer la clé pour revenir au HTML par défaut
+        delete DB.pageTexts[k]; changed = true;
+      }
+    }
+  });
+  if (changed) saveData(DB);
+})();
+
 if (!DB.musicCategories || !DB.musicCategories.length) { DB.musicCategories = defaultMusicCategories(); saveData(DB); }
 applyModules();
 try { applyMaintenanceMode(); } catch(e) {}

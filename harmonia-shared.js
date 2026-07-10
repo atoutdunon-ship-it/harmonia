@@ -1512,6 +1512,27 @@ if (!DB.modules)        { DB.modules = defaultModules(); saveData(DB); }
   saveData(DB);
 })();
 if (!DB.pageTexts)   { DB.pageTexts = {}; saveData(DB); }
+
+(function _cleanVoxialFromPageTexts() {
+  if (!DB.pageTexts) return;
+  var changed = false;
+  Object.keys(DB.pageTexts).forEach(function(k) {
+
+    if (k === 'footer_credits' || k.indexOf(':footer_credits') !== -1) {
+      delete DB.pageTexts[k]; changed = true; return;
+    }
+
+    if ((k === 'footer_legal' || k.indexOf(':footer_legal') !== -1) && DB.pageTexts[k]) {
+      var v = DB.pageTexts[k];
+      if (/voxial/i.test(v)) {
+
+        delete DB.pageTexts[k]; changed = true;
+      }
+    }
+  });
+  if (changed) saveData(DB);
+})();
+
 if (!DB.musicCategories || !DB.musicCategories.length) { DB.musicCategories = defaultMusicCategories(); saveData(DB); }
 applyModules();
 try { applyMaintenanceMode(); } catch(e) {}

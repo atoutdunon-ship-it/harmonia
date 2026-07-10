@@ -1342,11 +1342,9 @@
     padding-top: 14px;
     border-top: 1px solid rgba(255,255,255,0.06);
   }
-  .footer-credits a {
-    color: rgba(255,255,255,0.28);
-    text-decoration: none;
-  }
+  .footer-credits a { color: rgba(255,255,255,0.28); text-decoration: none; }
   .footer-credits a:hover { color: rgba(255,255,255,0.55); }
+
   @media (max-width: 768px) {
     .legal-box { padding: 40px 24px 32px; }
     .legal-h1 { font-size: 20px; }
