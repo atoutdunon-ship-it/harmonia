@@ -1646,6 +1646,19 @@ try { applyMaintenanceMode(); } catch(e) {}
   saveData(DB);
 })();
 
+(function migrateTrackSpotifyV10() {
+  if (DB._mediaV >= 10) return;
+  var defMap = {};
+  defaultTracks().forEach(function(t){ if (t.id) defMap[t.id] = t; });
+  var changed = false;
+  (DB.tracks || []).forEach(function(t) {
+    var def = defMap[t.id];
+    if (def && def.spotify && !t.spotify) { t.spotify = def.spotify; changed = true; }
+  });
+  DB._mediaV = 10;
+  if (changed) saveData(DB);
+})();
+
 (function restoreMissingElidaAlbums() {
   if (!DB.albums) DB.albums = [];
   var defs = defaultAlbums().filter(function(d){ return d.artist === 'Elida Almeida'; });
@@ -2880,83 +2893,83 @@ function defaultTracks() {
   return [
 
 
-    {id:101, artist:"Elida Almeida", title:"Lebam Ku Bo",                  album:"Ora Doci Ora Margos", duration:"3:59", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"eszj1xPGJiU", style:"Tabanka",  category:"traditional"},
-    {id:102, artist:"Elida Almeida", title:"Nta Konsigui",                 album:"Ora Doci Ora Margos", duration:"4:41", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"pNHHp0UgBQ4", style:"Funaná", category:"traditional"},
-    {id:103, artist:"Elida Almeida", title:"Storia Ki Nkontadu",           album:"Ora Doci Ora Margos", duration:"3:29", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"Rcmb4rsYhmo", style:"Batuque",  category:"traditional"},
-    {id:104, artist:"Elida Almeida", title:"Nhu Santiagu",                 album:"Ora Doci Ora Margos", duration:"4:12", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"yZBVJCrumvs", style:"Tabanka",  category:"traditional"},
-    {id:105, artist:"Elida Almeida", title:"Di Mi Ku Bo",                  album:"Ora Doci Ora Margos", duration:"3:15", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"Ycw2t3_8H4o", style:"Funaná", category:"traditional"},
-    {id:106, artist:"Elida Almeida", title:"Mar Sagrado",                  album:"Ora Doci Ora Margos", duration:"4:23", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"Qm-fKH7mMfM", style:"Batuque",  category:"traditional"},
-    {id:107, artist:"Elida Almeida", title:"Djam Nkrel Pa Mi",             album:"Ora Doci Ora Margos", duration:"3:14", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"XLbLhPd4uog", style:"Tabanka",  category:"traditional"},
-    {id:108, artist:"Elida Almeida", title:"Txiku Branku",                 album:"Ora Doci Ora Margos", duration:"3:27", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"LUNkb7FqJTM", style:"Batuque",  category:"traditional"},
-    {id:109, artist:"Elida Almeida", title:"Tomam El",                     album:"Ora Doci Ora Margos", duration:"4:17", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"De-lLajIYGc", style:"Funaná", category:"traditional"},
-    {id:110, artist:"Elida Almeida", title:"Joana",                        album:"Ora Doci Ora Margos", duration:"3:35", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"NKFFA0_aFg0", style:"Tabanka",  category:"traditional"},
-    {id:111, artist:"Elida Almeida", title:"Txuputin",                     album:"Ora Doci Ora Margos", duration:"3:23", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"UgLc86o2u3g", style:"Funaná", category:"traditional"},
-    {id:112, artist:"Elida Almeida", title:"Nha Fidju Spera",              album:"Ora Doci Ora Margos", duration:"3:43", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"yJIKhJMFD0s", style:"Batuque",  category:"traditional"},
-    {id:113, artist:"Elida Almeida", title:"Nha Violão",              album:"Ora Doci Ora Margos", duration:"2:52", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"Rgkz3sKONnw", style:"Tabanka",  category:"traditional"},
+    {id:101, artist:"Elida Almeida", title:"Lebam Ku Bo",                  album:"Ora Doci Ora Margos", duration:"3:59", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"eszj1xPGJiU", style:"Tabanka", spotify:"https://open.spotify.com/track/78Lqw44PXHik1Qh9OlPoJr",  category:"traditional"},
+    {id:102, artist:"Elida Almeida", title:"Nta Konsigui",                 album:"Ora Doci Ora Margos", duration:"4:41", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"pNHHp0UgBQ4", style:"Funaná", spotify:"https://open.spotify.com/track/5u3ARAjAjiY3s8ABZobH3T", category:"traditional"},
+    {id:103, artist:"Elida Almeida", title:"Storia Ki Nkontadu",           album:"Ora Doci Ora Margos", duration:"3:29", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"Rcmb4rsYhmo", style:"Batuque", spotify:"https://open.spotify.com/track/7eKLDlYgUFAuDn7Gg9QQgO",  category:"traditional"},
+    {id:104, artist:"Elida Almeida", title:"Nhu Santiagu",                 album:"Ora Doci Ora Margos", duration:"4:12", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"yZBVJCrumvs", style:"Tabanka", spotify:"https://open.spotify.com/track/4sZ2xRdtCKgLxk8m2AbWP0",  category:"traditional"},
+    {id:105, artist:"Elida Almeida", title:"Di Mi Ku Bo",                  album:"Ora Doci Ora Margos", duration:"3:15", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"Ycw2t3_8H4o", style:"Funaná", spotify:"https://open.spotify.com/track/1nBJD1dBA1nNVu88wFxUUX", category:"traditional"},
+    {id:106, artist:"Elida Almeida", title:"Mar Sagrado",                  album:"Ora Doci Ora Margos", duration:"4:23", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"Qm-fKH7mMfM", style:"Batuque", spotify:"https://open.spotify.com/track/6QXRl7jdKSDlFKsHR9yFig",  category:"traditional"},
+    {id:107, artist:"Elida Almeida", title:"Djam Nkrel Pa Mi",             album:"Ora Doci Ora Margos", duration:"3:14", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"XLbLhPd4uog", style:"Tabanka", spotify:"https://open.spotify.com/track/2wtFEzVWmfNycZdELZYGZz",  category:"traditional"},
+    {id:108, artist:"Elida Almeida", title:"Txiku Branku",                 album:"Ora Doci Ora Margos", duration:"3:27", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"LUNkb7FqJTM", style:"Batuque", spotify:"https://open.spotify.com/track/3yci9n4lDEjJEJBJNEOthm",  category:"traditional"},
+    {id:109, artist:"Elida Almeida", title:"Tomam El",                     album:"Ora Doci Ora Margos", duration:"4:17", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"De-lLajIYGc", style:"Funaná", spotify:"https://open.spotify.com/track/3N8pJbtENfrg1BUhNXoiwe", category:"traditional"},
+    {id:110, artist:"Elida Almeida", title:"Joana",                        album:"Ora Doci Ora Margos", duration:"3:35", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"NKFFA0_aFg0", style:"Tabanka", spotify:"https://open.spotify.com/track/4apeQC9cmQkTKaiBCosBYY",  category:"traditional"},
+    {id:111, artist:"Elida Almeida", title:"Txuputin",                     album:"Ora Doci Ora Margos", duration:"3:23", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"UgLc86o2u3g", style:"Funaná", spotify:"https://open.spotify.com/track/0lGjtkQ3bL2uLnz83G3CJ7", category:"traditional"},
+    {id:112, artist:"Elida Almeida", title:"Nha Fidju Spera",              album:"Ora Doci Ora Margos", duration:"3:43", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"yJIKhJMFD0s", style:"Batuque", spotify:"https://open.spotify.com/track/34O6jn6XJx5aXbpcXLKr1E",  category:"traditional"},
+    {id:113, artist:"Elida Almeida", title:"Nha Violão",              album:"Ora Doci Ora Margos", duration:"2:52", cover:"https://i.discogs.com/914QhWKwrxDIg9uZNRXs5ecb4-lBcvHI1VJQXGh6OoU/rs:fit/g:sm/q:90/h:596/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTg1Mjc5/OTUtMTY4MjAwNTY0/Ny02MTMwLmpwZWc.jpeg", ytId:"Rgkz3sKONnw", style:"Tabanka", spotify:"https://open.spotify.com/track/5I1x23iDRkxPcQxe4iRjPe",  category:"traditional"},
 
-    {id:114, artist:"Elida Almeida", title:"Djam Odja",                   album:"Kebrada", duration:"3:14", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"",            style:"Funaná", category:"traditional"},
-    {id:115, artist:"Elida Almeida", title:"Kontam",                      album:"Kebrada", duration:"3:36", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"",            style:"Tabanka",  category:"traditional"},
-    {id:116, artist:"Elida Almeida", title:"Nlibra Di Bo",                album:"Kebrada", duration:"3:17", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"",            style:"Batuque",  category:"traditional"},
-    {id:117, artist:"Elida Almeida", title:"Sapatinha (Nha Mininensa)",   album:"Kebrada", duration:"3:43", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"",            style:"Tabanka",  category:"traditional"},
-    {id:118, artist:"Elida Almeida", title:"Ki Ta Manda E Mi",            album:"Kebrada", duration:"4:38", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"",            style:"Funaná", category:"traditional"},
-    {id:119, artist:"Elida Almeida", title:"Nha Rainha",                  album:"Kebrada", duration:"3:31", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"",            style:"Batuque",  category:"traditional"},
-    {id:120, artist:"Elida Almeida", title:"Forti Dor",                   album:"Kebrada", duration:"4:12", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"ke3rvQm7Dvk", style:"Tabanka",  category:"traditional"},
-    {id:121, artist:"Elida Almeida", title:"Bersu d'Oro",                 album:"Kebrada", duration:"3:47", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"3UqOwvIK3T8", style:"Funaná", category:"traditional"},
-    {id:122, artist:"Elida Almeida", title:"Grogu Kaba",                  album:"Kebrada", duration:"3:14", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"RWfq6sdcAm0", style:"Batuque",  category:"traditional"},
-    {id:123, artist:"Elida Almeida", title:"N'Kreu",                      album:"Kebrada", duration:"3:20", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"",            style:"Tabanka",  category:"traditional"},
-    {id:124, artist:"Elida Almeida", title:"Ilia Mundu",                  album:"Kebrada", duration:"4:06", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"",            style:"Funaná", category:"traditional"},
-    {id:125, artist:"Elida Almeida", title:"Nta Fasi Kusa",               album:"Kebrada", duration:"2:35", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"",            style:"Batuque",  category:"traditional"},
+    {id:114, artist:"Elida Almeida", title:"Djam Odja",                   album:"Kebrada", duration:"3:14", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"",            style:"Funaná", spotify:"https://open.spotify.com/track/4PXYWDK78ORPqYaqavJbew", category:"traditional"},
+    {id:115, artist:"Elida Almeida", title:"Kontam",                      album:"Kebrada", duration:"3:36", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"",            style:"Tabanka", spotify:"https://open.spotify.com/track/2okZA0SXdXXB4WYfx07Hoh",  category:"traditional"},
+    {id:116, artist:"Elida Almeida", title:"Nlibra Di Bo",                album:"Kebrada", duration:"3:17", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"",            style:"Batuque", spotify:"https://open.spotify.com/track/3fFRgek3VpwfVt9bNDFJiq",  category:"traditional"},
+    {id:117, artist:"Elida Almeida", title:"Sapatinha (Nha Mininensa)",   album:"Kebrada", duration:"3:43", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"",            style:"Tabanka", spotify:"https://open.spotify.com/track/1qJ5ZHD1enZal7ZRc0hDnx",  category:"traditional"},
+    {id:118, artist:"Elida Almeida", title:"Ki Ta Manda E Mi",            album:"Kebrada", duration:"4:38", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"",            style:"Funaná", spotify:"https://open.spotify.com/track/26kfh99YndsjldThmClik3", category:"traditional"},
+    {id:119, artist:"Elida Almeida", title:"Nha Rainha",                  album:"Kebrada", duration:"3:31", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"",            style:"Batuque", spotify:"https://open.spotify.com/track/1pwwF8UAinn5nB8kTs5GBw",  category:"traditional"},
+    {id:120, artist:"Elida Almeida", title:"Forti Dor",                   album:"Kebrada", duration:"4:12", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"ke3rvQm7Dvk", style:"Tabanka", spotify:"https://open.spotify.com/track/2bUncWHrHaH0uCqnmZRXld",  category:"traditional"},
+    {id:121, artist:"Elida Almeida", title:"Bersu d'Oro",                 album:"Kebrada", duration:"3:47", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"3UqOwvIK3T8", style:"Funaná", spotify:"https://open.spotify.com/track/4E6wI4yOhWveCbYqJLXQ4N", category:"traditional"},
+    {id:122, artist:"Elida Almeida", title:"Grogu Kaba",                  album:"Kebrada", duration:"3:14", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"RWfq6sdcAm0", style:"Batuque", spotify:"https://open.spotify.com/track/13qmQloiVHD0nTDvwSntKL",  category:"traditional"},
+    {id:123, artist:"Elida Almeida", title:"N'Kreu",                      album:"Kebrada", duration:"3:20", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"",            style:"Tabanka", spotify:"https://open.spotify.com/track/7jie37uSCKeO6ha8SCOoqB",  category:"traditional"},
+    {id:124, artist:"Elida Almeida", title:"Ilia Mundu",                  album:"Kebrada", duration:"4:06", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"",            style:"Funaná", spotify:"https://open.spotify.com/track/6oLeOYwb645kyvgOzCsZdG", category:"traditional"},
+    {id:125, artist:"Elida Almeida", title:"Nta Fasi Kusa",               album:"Kebrada", duration:"2:35", cover:"https://i.discogs.com/65uNFTsDz8lGFPcUj7c4-TGRVB2Rw8asEoB807T-e_I/rs:fit/g:sm/q:90/h:535/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTExMzMx/NTA4LTE1MTQzODkx/MjYtMjUzMS5qcGVn.jpeg", ytId:"",            style:"Batuque", spotify:"https://open.spotify.com/track/25crkvA4SiDNQTv12KBaUb",  category:"traditional"},
 
-    {id:126, artist:"Elida Almeida", title:"Bersu d'Oru",                 album:"Elida", duration:"3:47", cover:"https://i.discogs.com/EUicjuQU9x1PzCQKfelBthbMbpAfP4GfCeMlGAME-P8/rs:fit/g:sm/q:90/h:541/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNjk5/MDM3LTE1MDI2Mzc3/NjYtMjExMC5qcGVn.jpeg", ytId:"",            style:"Tabanka",  category:"traditional"},
-    {id:127, artist:"Elida Almeida", title:"Forti Dor",                   album:"Elida", duration:"4:12", cover:"https://i.discogs.com/EUicjuQU9x1PzCQKfelBthbMbpAfP4GfCeMlGAME-P8/rs:fit/g:sm/q:90/h:541/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNjk5/MDM3LTE1MDI2Mzc3/NjYtMjExMC5qcGVn.jpeg", ytId:"",            style:"Funaná", category:"traditional"},
-    {id:128, artist:"Elida Almeida", title:"Era Mintira",                 album:"Elida", duration:"4:19", cover:"https://i.discogs.com/EUicjuQU9x1PzCQKfelBthbMbpAfP4GfCeMlGAME-P8/rs:fit/g:sm/q:90/h:541/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNjk5/MDM3LTE1MDI2Mzc3/NjYtMjExMC5qcGVn.jpeg", ytId:"X1e8QV5vrPM", style:"Batuque",  category:"traditional"},
-    {id:129, artist:"Elida Almeida", title:"Discriminason",               album:"Elida", duration:"4:19", cover:"https://i.discogs.com/EUicjuQU9x1PzCQKfelBthbMbpAfP4GfCeMlGAME-P8/rs:fit/g:sm/q:90/h:541/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNjk5/MDM3LTE1MDI2Mzc3/NjYtMjExMC5qcGVn.jpeg", ytId:"NrxsdNElgSk", style:"Tabanka",  category:"traditional"},
-    {id:130, artist:"Elida Almeida", title:"Di Mi Ku Di Bo",              album:"Elida", duration:"3:52", cover:"https://i.discogs.com/EUicjuQU9x1PzCQKfelBthbMbpAfP4GfCeMlGAME-P8/rs:fit/g:sm/q:90/h:541/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNjk5/MDM3LTE1MDI2Mzc3/NjYtMjExMC5qcGVn.jpeg", ytId:"",            style:"Funaná", category:"traditional"},
-    {id:131, artist:"Elida Almeida", title:"Txika",                       album:"Elida", duration:"3:38", cover:"https://i.discogs.com/EUicjuQU9x1PzCQKfelBthbMbpAfP4GfCeMlGAME-P8/rs:fit/g:sm/q:90/h:541/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNjk5/MDM3LTE1MDI2Mzc3/NjYtMjExMC5qcGVn.jpeg", ytId:"pgfrHGfZ0AY", style:"Batuque",  category:"traditional"},
-    {id:132, artist:"Elida Almeida", title:"Bersu d'Oru (Versão Tabanka)",  album:"Elida", duration:"3:47", cover:"https://i.discogs.com/EUicjuQU9x1PzCQKfelBthbMbpAfP4GfCeMlGAME-P8/rs:fit/g:sm/q:90/h:541/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNjk5/MDM3LTE1MDI2Mzc3/NjYtMjExMC5qcGVn.jpeg", ytId:"",            style:"Tabanka",  category:"traditional"},
+    {id:126, artist:"Elida Almeida", title:"Bersu d'Oru",                 album:"Elida", duration:"3:47", cover:"https://i.discogs.com/EUicjuQU9x1PzCQKfelBthbMbpAfP4GfCeMlGAME-P8/rs:fit/g:sm/q:90/h:541/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNjk5/MDM3LTE1MDI2Mzc3/NjYtMjExMC5qcGVn.jpeg", ytId:"",            style:"Tabanka", spotify:"https://open.spotify.com/track/1ojL8g2uw1aY37VOdrh26W",  category:"traditional"},
+    {id:127, artist:"Elida Almeida", title:"Forti Dor",                   album:"Elida", duration:"4:12", cover:"https://i.discogs.com/EUicjuQU9x1PzCQKfelBthbMbpAfP4GfCeMlGAME-P8/rs:fit/g:sm/q:90/h:541/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNjk5/MDM3LTE1MDI2Mzc3/NjYtMjExMC5qcGVn.jpeg", ytId:"",            style:"Funaná", spotify:"https://open.spotify.com/track/0dfAHxfbYnTvBdzNDzcpfS", category:"traditional"},
+    {id:128, artist:"Elida Almeida", title:"Era Mintira",                 album:"Elida", duration:"4:19", cover:"https://i.discogs.com/EUicjuQU9x1PzCQKfelBthbMbpAfP4GfCeMlGAME-P8/rs:fit/g:sm/q:90/h:541/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNjk5/MDM3LTE1MDI2Mzc3/NjYtMjExMC5qcGVn.jpeg", ytId:"X1e8QV5vrPM", style:"Batuque", spotify:"https://open.spotify.com/track/1lZFaxCHUREB2Ppej1amS2",  category:"traditional"},
+    {id:129, artist:"Elida Almeida", title:"Discriminason",               album:"Elida", duration:"4:19", cover:"https://i.discogs.com/EUicjuQU9x1PzCQKfelBthbMbpAfP4GfCeMlGAME-P8/rs:fit/g:sm/q:90/h:541/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNjk5/MDM3LTE1MDI2Mzc3/NjYtMjExMC5qcGVn.jpeg", ytId:"NrxsdNElgSk", style:"Tabanka", spotify:"https://open.spotify.com/track/0lcDECqctJpaELSf8EUziB",  category:"traditional"},
+    {id:130, artist:"Elida Almeida", title:"Di Mi Ku Di Bo",              album:"Elida", duration:"3:52", cover:"https://i.discogs.com/EUicjuQU9x1PzCQKfelBthbMbpAfP4GfCeMlGAME-P8/rs:fit/g:sm/q:90/h:541/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNjk5/MDM3LTE1MDI2Mzc3/NjYtMjExMC5qcGVn.jpeg", ytId:"",            style:"Funaná", spotify:"https://open.spotify.com/track/2E7E3byU9CaCknfpv00vqw", category:"traditional"},
+    {id:131, artist:"Elida Almeida", title:"Txika",                       album:"Elida", duration:"3:38", cover:"https://i.discogs.com/EUicjuQU9x1PzCQKfelBthbMbpAfP4GfCeMlGAME-P8/rs:fit/g:sm/q:90/h:541/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNjk5/MDM3LTE1MDI2Mzc3/NjYtMjExMC5qcGVn.jpeg", ytId:"pgfrHGfZ0AY", style:"Batuque", spotify:"https://open.spotify.com/track/0ClBz0Qm8S7cDKSvjyrDEJ",  category:"traditional"},
+    {id:132, artist:"Elida Almeida", title:"Bersu d'Oru (Versão Tabanka)",  album:"Elida", duration:"3:47", cover:"https://i.discogs.com/EUicjuQU9x1PzCQKfelBthbMbpAfP4GfCeMlGAME-P8/rs:fit/g:sm/q:90/h:541/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTEwNjk5/MDM3LTE1MDI2Mzc3/NjYtMjExMC5qcGVn.jpeg", ytId:"",            style:"Tabanka", spotify:"https://open.spotify.com/track/3uiMneaQ0HkNEisGnjXwIA",  category:"traditional"},
 
-    {id:133, artist:"Elida Almeida", title:"Bidibido",          album:"Gerasonobu", duration:"4:20", cover:"images/albums/elida/gerasonobu.jpg", ytId:"dXyP99b6puQ", style:"Batuque",  category:"traditional"},
-    {id:136, artist:"Elida Almeida", title:"Pagamentu Buru",    album:"Gerasonobu", duration:"3:45", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Funaná", category:"traditional"},
-    {id:137, artist:"Elida Almeida", title:"Tolobaska",         album:"Gerasonobu", duration:"3:58", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Tabanka",  category:"traditional"},
-    {id:138, artist:"Elida Almeida", title:"Obrigadu Papa",     album:"Gerasonobu", duration:"4:10", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Batuque",  category:"traditional"},
-    {id:139, artist:"Elida Almeida", title:"Mundu Ka Bu Kaba",  album:"Gerasonobu", duration:"3:52", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Funaná", category:"traditional"},
-    {id:140, artist:"Elida Almeida", title:"Mudjei",            album:"Gerasonobu", duration:"3:30", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Tabanka",  category:"traditional"},
-    {id:141, artist:"Elida Almeida", title:"Amizadi Novu",      album:"Gerasonobu", duration:"4:05", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Batuque",  category:"traditional"},
-    {id:142, artist:"Elida Almeida", title:"Djuze Lopi",        album:"Gerasonobu", duration:"3:40", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Funaná", category:"traditional"},
-    {id:143, artist:"Elida Almeida", title:"Yaya",              album:"Gerasonobu", duration:"3:25", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Tabanka",  category:"traditional"},
-    {id:144, artist:"Elida Almeida", title:"Di Pundi Nu Bem",   album:"Gerasonobu", duration:"4:15", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Batuque",  category:"traditional"},
-    {id:145, artist:"Elida Almeida", title:"Funana",            album:"Gerasonobu", duration:"3:48", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Funaná", category:"traditional"},
-    {id:146, artist:"Elida Almeida", title:"Sai Bu Bai",        album:"Gerasonobu", duration:"3:55", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Tabanka",  category:"traditional"},
-    {id:147, artist:"Elida Almeida", title:"Nha Bilida",        album:"Gerasonobu", duration:"4:02", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Batuque",  category:"traditional"},
+    {id:133, artist:"Elida Almeida", title:"Bidibido",          album:"Gerasonobu", duration:"4:20", cover:"images/albums/elida/gerasonobu.jpg", ytId:"dXyP99b6puQ", style:"Batuque", spotify:"https://open.spotify.com/track/4c4n76N47lvjcXo90IH4T7",  category:"traditional"},
+    {id:136, artist:"Elida Almeida", title:"Pagamentu Buru",    album:"Gerasonobu", duration:"3:45", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Funaná", spotify:"https://open.spotify.com/track/3onSDWo7zg2R6PFm8U8Urn", category:"traditional"},
+    {id:137, artist:"Elida Almeida", title:"Tolobaska",         album:"Gerasonobu", duration:"3:58", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Tabanka", spotify:"https://open.spotify.com/track/1tpQ2kQWAEUQqJ5uYNAX0U",  category:"traditional"},
+    {id:138, artist:"Elida Almeida", title:"Obrigadu Papa",     album:"Gerasonobu", duration:"4:10", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Batuque", spotify:"https://open.spotify.com/track/4RszldlCB258jejVtEhmu9",  category:"traditional"},
+    {id:139, artist:"Elida Almeida", title:"Mundu Ka Bu Kaba",  album:"Gerasonobu", duration:"3:52", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Funaná", spotify:"https://open.spotify.com/track/0zauwMkZJ1Jlll7zXmzVo8", category:"traditional"},
+    {id:140, artist:"Elida Almeida", title:"Mudjei",            album:"Gerasonobu", duration:"3:30", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Tabanka", spotify:"https://open.spotify.com/track/1uNb6ojPYKIo3BZR5irmUH",  category:"traditional"},
+    {id:141, artist:"Elida Almeida", title:"Amizadi Novu",      album:"Gerasonobu", duration:"4:05", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Batuque", spotify:"https://open.spotify.com/track/37ogXRrthyGfIP0NsGxVoG",  category:"traditional"},
+    {id:142, artist:"Elida Almeida", title:"Djuze Lopi",        album:"Gerasonobu", duration:"3:40", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Funaná", spotify:"https://open.spotify.com/track/0LsF6Kvcz3AzodcP15jsks", category:"traditional"},
+    {id:143, artist:"Elida Almeida", title:"Yaya",              album:"Gerasonobu", duration:"3:25", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Tabanka", spotify:"https://open.spotify.com/track/13RxWvvfRx7uR9uLu5Zb4A",  category:"traditional"},
+    {id:144, artist:"Elida Almeida", title:"Di Pundi Nu Bem",   album:"Gerasonobu", duration:"4:15", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Batuque", spotify:"https://open.spotify.com/track/58quTD13x7JEIEPtyHpPnt",  category:"traditional"},
+    {id:145, artist:"Elida Almeida", title:"Funana",            album:"Gerasonobu", duration:"3:48", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Funaná", spotify:"https://open.spotify.com/track/4ytrEM4yc333Miofcrzvdp", category:"traditional"},
+    {id:146, artist:"Elida Almeida", title:"Sai Bu Bai",        album:"Gerasonobu", duration:"3:55", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Tabanka", spotify:"https://open.spotify.com/track/5b9Uzr7AYNPcFnHsrMf6t7",  category:"traditional"},
+    {id:147, artist:"Elida Almeida", title:"Nha Bilida",        album:"Gerasonobu", duration:"4:02", cover:"images/albums/elida/gerasonobu.jpg", ytId:"",            style:"Batuque", spotify:"https://open.spotify.com/track/79TdrpMVopBTugeE3PfQT8",  category:"traditional"},
 
-    {id:134, artist:"Elida Almeida", title:"Kaminhu Lonji",     album:"Di Lonji",   duration:"4:35", cover:"images/albums/elida/di_lonji.jpg",   ytId:"gKe8pcELk9g", style:"Tabanka",  category:"traditional"},
-    {id:148, artist:"Elida Almeida", title:"Dondona",           album:"Di Lonji",   duration:"3:01", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Funaná", category:"traditional"},
-    {id:149, artist:"Elida Almeida", title:"Im-Par",            album:"Di Lonji",   duration:"3:06", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Batuque",  category:"traditional"},
-    {id:150, artist:"Elida Almeida", title:"Mexem",             album:"Di Lonji",   duration:"4:27", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Tabanka",  category:"traditional"},
-    {id:151, artist:"Elida Almeida", title:"Bedjera",           album:"Di Lonji",   duration:"2:50", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Funaná", category:"traditional"},
-    {id:152, artist:"Elida Almeida", title:"Djarmai",           album:"Di Lonji",   duration:"2:39", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Batuque",  category:"traditional"},
-    {id:153, artist:"Elida Almeida", title:"Mo Ki Nta Fazi",    album:"Di Lonji",   duration:"3:02", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Tabanka",  category:"traditional"},
-    {id:154, artist:"Elida Almeida", title:"Dipalbesa",         album:"Di Lonji",   duration:"3:15", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Funaná", category:"traditional"},
-    {id:155, artist:"Elida Almeida", title:"Eh Ka Bo",          album:"Di Lonji",   duration:"2:51", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Batuque",  category:"traditional"},
-    {id:156, artist:"Elida Almeida", title:"Amigu",             album:"Di Lonji",   duration:"3:29", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Tabanka",  category:"traditional"},
-    {id:135, artist:"Elida Almeida", title:"Mulata",            album:"Di Lonji",   duration:"3:55", cover:"images/albums/elida/di_lonji.jpg",   ytId:"AYaIhbNtFTM", style:"Funaná", category:"traditional"},
-    {id:157, artist:"Elida Almeida", title:"Morabeza",          album:"Di Lonji",   duration:"3:06", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Batuque",  category:"traditional"},
-    {id:158, artist:"Elida Almeida", title:"Donu Di Mundu",     album:"Di Lonji",   duration:"4:08", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Tabanka",  category:"traditional"},
-    {id:159, artist:"Elida Almeida", title:"Domingo Denxo",     album:"Di Lonji",   duration:"3:02", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Funaná", category:"traditional"},
+    {id:134, artist:"Elida Almeida", title:"Kaminhu Lonji",     album:"Di Lonji",   duration:"4:35", cover:"images/albums/elida/di_lonji.jpg",   ytId:"gKe8pcELk9g", style:"Tabanka", spotify:"https://open.spotify.com/track/2LXGHGqZx0PeDbhQ0Jk69D",  category:"traditional"},
+    {id:148, artist:"Elida Almeida", title:"Dondona",           album:"Di Lonji",   duration:"3:01", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Funaná", spotify:"https://open.spotify.com/track/3vbq3p2bbh1Ywgygj0VYpl", category:"traditional"},
+    {id:149, artist:"Elida Almeida", title:"Im-Par",            album:"Di Lonji",   duration:"3:06", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Batuque", spotify:"https://open.spotify.com/track/2vINhH3jNhdjzyucOqTr8h",  category:"traditional"},
+    {id:150, artist:"Elida Almeida", title:"Mexem",             album:"Di Lonji",   duration:"4:27", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Tabanka", spotify:"https://open.spotify.com/track/54AEX0Rw8y1nMmeJr1L0Vp",  category:"traditional"},
+    {id:151, artist:"Elida Almeida", title:"Bedjera",           album:"Di Lonji",   duration:"2:50", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Funaná", spotify:"https://open.spotify.com/track/3nHorixBzolACDcbFvoHyj", category:"traditional"},
+    {id:152, artist:"Elida Almeida", title:"Djarmai",           album:"Di Lonji",   duration:"2:39", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Batuque", spotify:"https://open.spotify.com/track/41VMueusrouaOmWdNtbiSd",  category:"traditional"},
+    {id:153, artist:"Elida Almeida", title:"Mo Ki Nta Fazi",    album:"Di Lonji",   duration:"3:02", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Tabanka", spotify:"https://open.spotify.com/track/4uRrM4QdRCDiipLQEmWUmx",  category:"traditional"},
+    {id:154, artist:"Elida Almeida", title:"Dipalbesa",         album:"Di Lonji",   duration:"3:15", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Funaná", spotify:"https://open.spotify.com/track/4ToUJzCBOJViYoNFuKkI4P", category:"traditional"},
+    {id:155, artist:"Elida Almeida", title:"Eh Ka Bo",          album:"Di Lonji",   duration:"2:51", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Batuque", spotify:"https://open.spotify.com/track/18oGNk9AneqB9gkzxh2Ukh",  category:"traditional"},
+    {id:156, artist:"Elida Almeida", title:"Amigu",             album:"Di Lonji",   duration:"3:29", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Tabanka", spotify:"https://open.spotify.com/track/5AWMBolrU68WMZ36XMlx9d",  category:"traditional"},
+    {id:135, artist:"Elida Almeida", title:"Mulata",            album:"Di Lonji",   duration:"3:55", cover:"images/albums/elida/di_lonji.jpg",   ytId:"AYaIhbNtFTM", style:"Funaná", spotify:"https://open.spotify.com/track/4dD4emCAa8yrD9BndTZwyn", category:"traditional"},
+    {id:157, artist:"Elida Almeida", title:"Morabeza",          album:"Di Lonji",   duration:"3:06", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Batuque", spotify:"https://open.spotify.com/track/0uDf1n0iDy8LYkZV7qbL7i",  category:"traditional"},
+    {id:158, artist:"Elida Almeida", title:"Donu Di Mundu",     album:"Di Lonji",   duration:"4:08", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Tabanka", spotify:"https://open.spotify.com/track/1kl5ebPCJhc6tBKLVPL1ha",  category:"traditional"},
+    {id:159, artist:"Elida Almeida", title:"Domingo Denxo",     album:"Di Lonji",   duration:"3:02", cover:"images/albums/elida/di_lonji.jpg",   ytId:"",            style:"Funaná", spotify:"https://open.spotify.com/track/37CN6n1WGBR4E4YP0OfGST", category:"traditional"},
 
-    {id:160, artist:"Elida Almeida", title:"Auto-Golu",         album:"Spedju",     duration:"3:30", cover:"images/albums/elida/spedju.jpg",     ytId:"",            style:"Funaná", category:"traditional"},
-    {id:161, artist:"Elida Almeida", title:"Fidju Pididu",      album:"Spedju",     duration:"3:45", cover:"images/albums/elida/spedju.jpg",     ytId:"",            style:"Tabanka",  category:"traditional"},
-    {id:162, artist:"Elida Almeida", title:"Dodu",              album:"Spedju",     duration:"3:20", cover:"images/albums/elida/spedju.jpg",     ytId:"",            style:"Batuque",  category:"traditional"},
-    {id:163, artist:"Elida Almeida", title:"Mintira (feat. Grace Evora)",    album:"Spedju", duration:"3:55", cover:"images/albums/elida/spedju.jpg", ytId:"", style:"Funaná", category:"traditional"},
-    {id:164, artist:"Elida Almeida", title:"Daddy (feat. Nancy Vieira)",     album:"Spedju", duration:"4:10", cover:"images/albums/elida/spedju.jpg", ytId:"", style:"Tabanka",  category:"traditional"},
-    {id:165, artist:"Elida Almeida", title:"Funa ku Nana",      album:"Spedju",     duration:"3:40", cover:"images/albums/elida/spedju.jpg",     ytId:"",            style:"Batuque",  category:"traditional"},
-    {id:166, artist:"Elida Almeida", title:"Kumbosa",           album:"Spedju",     duration:"3:25", cover:"images/albums/elida/spedju.jpg",     ytId:"",            style:"Funaná", category:"traditional"},
-    {id:167, artist:"Elida Almeida", title:"Baka Brabu (feat. Garry)",       album:"Spedju", duration:"3:50", cover:"images/albums/elida/spedju.jpg", ytId:"", style:"Tabanka",  category:"traditional"},
-    {id:168, artist:"Elida Almeida", title:"Cancer",            album:"Spedju",     duration:"4:05", cover:"images/albums/elida/spedju.jpg",     ytId:"",            style:"Batuque",  category:"traditional"},
-    {id:169, artist:"Elida Almeida", title:"Somam",             album:"Spedju",     duration:"3:35", cover:"images/albums/elida/spedju.jpg",     ytId:"",            style:"Funaná", category:"traditional"},
-    {id:170, artist:"Elida Almeida", title:"Nka Ta Kai Mas",    album:"Spedju",     duration:"3:48", cover:"images/albums/elida/spedju.jpg",     ytId:"",            style:"Tabanka",  category:"traditional"},
-    {id:171, artist:"Elida Almeida", title:"Numpasu",           album:"Spedju",     duration:"3:15", cover:"images/albums/elida/spedju.jpg",     ytId:"",            style:"Batuque",  category:"traditional"},
-    {id:172, artist:"Elida Almeida", title:"Nka Ta Pasa (feat. Freirianas Guerreiras)", album:"Spedju", duration:"4:20", cover:"images/albums/elida/spedju.jpg", ytId:"", style:"Funaná", category:"traditional"},
+    {id:160, artist:"Elida Almeida", title:"Auto-Golu",         album:"Spedju",     duration:"3:30", cover:"images/albums/elida/spedju.jpg",     ytId:"",            style:"Funaná", spotify:"https://open.spotify.com/track/39rc1TRygylfDL4n8GoXyZ", category:"traditional"},
+    {id:161, artist:"Elida Almeida", title:"Fidju Pididu",      album:"Spedju",     duration:"3:45", cover:"images/albums/elida/spedju.jpg",     ytId:"",            style:"Tabanka", spotify:"https://open.spotify.com/track/4iQANcQarp93kvJwET4Ci2",  category:"traditional"},
+    {id:162, artist:"Elida Almeida", title:"Dodu",              album:"Spedju",     duration:"3:20", cover:"images/albums/elida/spedju.jpg",     ytId:"",            style:"Batuque", spotify:"https://open.spotify.com/track/3BuKUCh8psK7lMjDHVflCS",  category:"traditional"},
+    {id:163, artist:"Elida Almeida", title:"Mintira (feat. Grace Evora)",    album:"Spedju", duration:"3:55", cover:"images/albums/elida/spedju.jpg", ytId:"", style:"Funaná", spotify:"https://open.spotify.com/track/5Fao56xTWQPMABukyBmcrE", category:"traditional"},
+    {id:164, artist:"Elida Almeida", title:"Daddy (feat. Nancy Vieira)",     album:"Spedju", duration:"4:10", cover:"images/albums/elida/spedju.jpg", ytId:"", style:"Tabanka", spotify:"https://open.spotify.com/track/7uCahCkELXcmfwcRnHqWTa",  category:"traditional"},
+    {id:165, artist:"Elida Almeida", title:"Funa ku Nana",      album:"Spedju",     duration:"3:40", cover:"images/albums/elida/spedju.jpg",     ytId:"",            style:"Batuque", spotify:"https://open.spotify.com/track/46cwMsmwxwduHFDgHQWt1u",  category:"traditional"},
+    {id:166, artist:"Elida Almeida", title:"Kumbosa",           album:"Spedju",     duration:"3:25", cover:"images/albums/elida/spedju.jpg",     ytId:"",            style:"Funaná", spotify:"https://open.spotify.com/track/5T5OZzYP8YNwjOxb7QRgZ6", category:"traditional"},
+    {id:167, artist:"Elida Almeida", title:"Baka Brabu (feat. Garry)",       album:"Spedju", duration:"3:50", cover:"images/albums/elida/spedju.jpg", ytId:"", style:"Tabanka", spotify:"https://open.spotify.com/track/2wT5xXCRbrKQrwRyOdYmvn",  category:"traditional"},
+    {id:168, artist:"Elida Almeida", title:"Cancer",            album:"Spedju",     duration:"4:05", cover:"images/albums/elida/spedju.jpg",     ytId:"",            style:"Batuque", spotify:"https://open.spotify.com/track/5op4mrZA3YBWKRbyeQRCM4",  category:"traditional"},
+    {id:169, artist:"Elida Almeida", title:"Somam",             album:"Spedju",     duration:"3:35", cover:"images/albums/elida/spedju.jpg",     ytId:"",            style:"Funaná", spotify:"https://open.spotify.com/track/6MWFFB6eq5Zt1Zroan03Op", category:"traditional"},
+    {id:170, artist:"Elida Almeida", title:"Nka Ta Kai Mas",    album:"Spedju",     duration:"3:48", cover:"images/albums/elida/spedju.jpg",     ytId:"",            style:"Tabanka", spotify:"https://open.spotify.com/track/5YXzhKUs5M4GEDecBbhB03",  category:"traditional"},
+    {id:171, artist:"Elida Almeida", title:"Numpasu",           album:"Spedju",     duration:"3:15", cover:"images/albums/elida/spedju.jpg",     ytId:"",            style:"Batuque", spotify:"https://open.spotify.com/track/0LAiPu517QXFXS37Srrzg3",  category:"traditional"},
+    {id:172, artist:"Elida Almeida", title:"Nka Ta Pasa (feat. Freirianas Guerreiras)", album:"Spedju", duration:"4:20", cover:"images/albums/elida/spedju.jpg", ytId:"", style:"Funaná", spotify:"https://open.spotify.com/track/3F5dR0yklXDlW9kjwrCN4X", category:"traditional"},
     {id:6, artist:"Lucibela", title:"Laço Umbilical", album:"Laço Umbilical", duration:"4:48", cover:"https://img.youtube.com/vi/CWjpLxduC24/hqdefault.jpg", ytId:"CWjpLxduC24", style:"Morna", category:"traditional"},
     {id:7, artist:"Lucibela", title:"Sodade", album:"Aura", duration:"5:02", cover:"", ytId:"7NUbNjBakOY", style:"Morna", category:"traditional"},
     {id:11, artist:"Fábio Ramos", title:"Um Cálice d'Nha Terra", album:"Mindelo Sessions", duration:"4:33", cover:"https://img.youtube.com/vi/Jjfv6n5Og_g/hqdefault.jpg", ytId:"oQVkCBkX2Ug", style:"Morna", category:"traditional"},
@@ -8816,7 +8829,11 @@ function openArtistPage(id) {
       var tracksHtml = '';
       if (albumTracks.length) {
         tracksHtml = albumTracks.map(function(t, ti) {
-          var spUrl  = t.spotify || al.spotify || a.spotify || '';
+          var spUrl  = t.spotify || '';
+          var embedId = 'ap-sp-'+id+'-'+idx+'-'+ti;
+          var spBtn  = spUrl
+            ? '<button class="ap-sp-btn" onclick="event.stopPropagation();openTrackSpotify(\''+spUrl+'\',\''+embedId+'\')" title="Écouter sur Spotify">&#9658; Écouter</button>'
+            : '';
           return '<div class="ap-track-row">'
             + '<span class="ap-track-num">'+(ti+1)+'</span>'
             + '<div class="ap-track-info">'
@@ -8824,18 +8841,27 @@ function openArtistPage(id) {
             +   (t.style ? '<span class="ap-track-genre">'+esc(t.style)+'</span>' : '')
             + '</div>'
             + '<span class="ap-track-dur">'+esc(t.duration||'')+'</span>'
-            + '</div>';
+            + spBtn
+            + '</div>'
+            + '<div class="ap-sp-embed-wrap" id="'+embedId+'" style="display:none;"></div>';
         }).join('');
       } else {
 
         var discAlbum = (a.discography || []).find(function(d){ return d.title === al.title; });
         if (discAlbum && discAlbum.tracks && discAlbum.tracks.length) {
           tracksHtml = discAlbum.tracks.map(function(t, ti) {
-            var tTitle = typeof t === 'object' ? (t.title || '') : t;
+            var tTitle  = typeof t === 'object' ? (t.title || '') : t;
+            var tSpUrl  = (typeof t === 'object' ? t.spotify : '') || '';
+            var embedId = 'ap-sp-disc-'+id+'-'+idx+'-'+ti;
+            var spBtn   = tSpUrl
+              ? '<button class="ap-sp-btn" onclick="event.stopPropagation();openTrackSpotify(\''+tSpUrl+'\',\''+embedId+'\')" title="Écouter sur Spotify">&#9658; Écouter</button>'
+              : '';
             return '<div class="ap-track-row">'
               + '<span class="ap-track-num">'+(ti+1)+'</span>'
               + '<div class="ap-track-info"><span class="ap-track-title">'+esc(tTitle)+'</span></div>'
-              + '</div>';
+              + spBtn
+              + '</div>'
+              + '<div class="ap-sp-embed-wrap" id="'+embedId+'" style="display:none;"></div>';
           }).join('');
         } else {
           tracksHtml = '<div style="color:var(--gray);font-size:12px;padding:16px 0;font-family:Arial;letter-spacing:1px;">Morceaux à venir</div>';
@@ -9065,6 +9091,34 @@ function openArtistPage(id) {
 
   if (_editModeActive) {
     setTimeout(function() { _hookEditablesIn(page); }, 50);
+  }
+}
+
+function openTrackSpotify(spUrl, embedId) {
+  if (!spUrl) return;
+  var embedUrl = spUrl.replace('open.spotify.com/', 'open.spotify.com/embed/').split('?')[0]
+    + '?utm_source=generator&theme=0';
+
+  document.querySelectorAll('.ap-sp-embed-wrap').forEach(function(el) {
+    if (el.id !== embedId) {
+      el.style.display = 'none';
+      el.innerHTML = '';
+      var prevRow = el.previousElementSibling;
+      if (prevRow) { var b = prevRow.querySelector('.ap-sp-btn'); if (b) b.innerHTML = '&#9658; Écouter'; }
+    }
+  });
+  var wrap = document.getElementById(embedId);
+  if (!wrap) return;
+  var btn = wrap.previousElementSibling ? wrap.previousElementSibling.querySelector('.ap-sp-btn') : null;
+  if (wrap.style.display === 'block') {
+    wrap.style.display = 'none'; wrap.innerHTML = '';
+    if (btn) btn.innerHTML = '&#9658; Écouter';
+  } else {
+    wrap.innerHTML = '<iframe src="'+embedUrl+'" width="100%" height="80" frameborder="0"'
+      +' allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"'
+      +' loading="lazy" style="border-radius:4px;display:block;"></iframe>';
+    wrap.style.display = 'block';
+    if (btn) btn.innerHTML = '&#9646;&#9646; Fermer';
   }
 }
 

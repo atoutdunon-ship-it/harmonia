@@ -8,6 +8,13 @@ Site statique de production musicale Cabo Verde, déployé sur **GitHub Pages**.
 
 ---
 
+## RÈGLE ABSOLUE — PÉRIMÈTRE DES MODIFICATIONS
+> **Il est interdit de modifier la structure interne fonctionnelle d'un fichier ou d'un projet au-delà de ce qui est explicitement demandé.**
+> Cela inclut : ajout de migrations, modification de fonctions existantes, ajout de champs dans le modèle de données, changement d'architecture JS/CSS, ajout de blocs HTML non demandés.
+> **Si une telle modification est nécessaire pour réaliser la demande, Claude doit en avertir l'utilisateur avant d'agir et attendre confirmation.**
+
+---
+
 ## CONTRAINTE DE SÉCURITÉ ABSOLUE — NE JAMAIS CONTOURNER
 > Le compte et profil **super admin (login: PROD)** ne peut PAS être modifié, ni supprimé sans le mot de passe **`Music7`**.
 > Cette contrainte est codée dans la fonction de sauvegarde des utilisateurs et doit être préservée dans toutes les modifications.
