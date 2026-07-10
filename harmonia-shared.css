@@ -2831,8 +2831,8 @@ nav.scrolled .hamburger:not(.open):active {
     gap: 6px;
   }
 
-  .nav-logo { margin-right: auto; order: 0; }
-  .nav-logo img { height: 28px !important; }
+  .nav-logo { margin-right: auto; order: 0; min-width: 0; flex-shrink: 1; }
+  .nav-logo img { height: 28px !important; width: auto; max-width: 150px; object-fit: contain; object-position: left center; }
 
 
   .lang-dropdown  { order: 6; }
@@ -4187,7 +4187,7 @@ body.edit-mode-active [data-item-type] > .item-toggle-wrap {
 
 
   nav     { padding: 0 16px !important; height: calc(56px + max(0px, env(safe-area-inset-top))); }
-  .nav-logo img { height: 20px !important; }
+  .nav-logo img { height: 20px !important; max-width: 110px; }
   .nav-links { top: calc(56px + max(0px, env(safe-area-inset-top))); }
 
 
@@ -4376,6 +4376,7 @@ body.edit-mode-active [data-item-type] > .item-toggle-wrap {
   .ap-disco-grid  { grid-template-columns: 1fr !important; }
   #shop           { padding: 60px 12px !important; }
   nav             { padding: 0 12px !important; }
+  .nav-logo img   { max-width: 90px; }
 }
 
 * { -webkit-tap-highlight-color: transparent; }
