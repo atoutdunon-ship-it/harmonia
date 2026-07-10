@@ -9096,6 +9096,10 @@ function openArtistPage(id) {
       if (albumTracks.length) {
         tracksHtml = albumTracks.map(function(t, ti) {
           var spUrl  = t.spotify || al.spotify || a.spotify || '';
+          var embedId = 'ap-sp-'+id+'-'+idx+'-'+ti;
+          var spBtn  = spUrl
+            ? '<button class="ap-sp-btn" onclick="event.stopPropagation();openTrackSpotify(\''+spUrl+'\',\''+embedId+'\')" title="Écouter sur Spotify">&#9658; Écouter</button>'
+            : '';
           return '<div class="ap-track-row">'
             + '<span class="ap-track-num">'+(ti+1)+'</span>'
             + '<div class="ap-track-info">'
@@ -9103,18 +9107,27 @@ function openArtistPage(id) {
             +   (t.style ? '<span class="ap-track-genre">'+esc(t.style)+'</span>' : '')
             + '</div>'
             + '<span class="ap-track-dur">'+esc(t.duration||'')+'</span>'
-            + '</div>';
+            + spBtn
+            + '</div>'
+            + '<div class="ap-sp-embed-wrap" id="'+embedId+'" style="display:none;"></div>';
         }).join('');
       } else {
         // Fallback : utiliser a.discography si DB.tracks n'a pas de morceaux pour cet album
         var discAlbum = (a.discography || []).find(function(d){ return d.title === al.title; });
         if (discAlbum && discAlbum.tracks && discAlbum.tracks.length) {
           tracksHtml = discAlbum.tracks.map(function(t, ti) {
-            var tTitle = typeof t === 'object' ? (t.title || '') : t;
+            var tTitle  = typeof t === 'object' ? (t.title || '') : t;
+            var tSpUrl  = (typeof t === 'object' ? t.spotify : '') || al.spotify || a.spotify || '';
+            var embedId = 'ap-sp-disc-'+id+'-'+idx+'-'+ti;
+            var spBtn   = tSpUrl
+              ? '<button class="ap-sp-btn" onclick="event.stopPropagation();openTrackSpotify(\''+tSpUrl+'\',\''+embedId+'\')" title="Écouter sur Spotify">&#9658; Écouter</button>'
+              : '';
             return '<div class="ap-track-row">'
               + '<span class="ap-track-num">'+(ti+1)+'</span>'
               + '<div class="ap-track-info"><span class="ap-track-title">'+esc(tTitle)+'</span></div>'
-              + '</div>';
+              + spBtn
+              + '</div>'
+              + '<div class="ap-sp-embed-wrap" id="'+embedId+'" style="display:none;"></div>';
           }).join('');
         } else {
           tracksHtml = '<div style="color:var(--gray);font-size:12px;padding:16px 0;font-family:Arial;letter-spacing:1px;">Morceaux à venir</div>';
@@ -9344,6 +9357,34 @@ function openArtistPage(id) {
   // Re-hooker les éléments éditables si mode édition actif
   if (_editModeActive) {
     setTimeout(function() { _hookEditablesIn(page); }, 50);
+  }
+}
+
+function openTrackSpotify(spUrl, embedId) {
+  if (!spUrl) return;
+  var embedUrl = spUrl.replace('open.spotify.com/', 'open.spotify.com/embed/').split('?')[0]
+    + '?utm_source=generator&theme=0';
+  // Fermer tous les autres embeds ouverts
+  document.querySelectorAll('.ap-sp-embed-wrap').forEach(function(el) {
+    if (el.id !== embedId) {
+      el.style.display = 'none';
+      el.innerHTML = '';
+      var prevRow = el.previousElementSibling;
+      if (prevRow) { var b = prevRow.querySelector('.ap-sp-btn'); if (b) b.innerHTML = '&#9658; Écouter'; }
+    }
+  });
+  var wrap = document.getElementById(embedId);
+  if (!wrap) return;
+  var btn = wrap.previousElementSibling ? wrap.previousElementSibling.querySelector('.ap-sp-btn') : null;
+  if (wrap.style.display === 'block') {
+    wrap.style.display = 'none'; wrap.innerHTML = '';
+    if (btn) btn.innerHTML = '&#9658; Écouter';
+  } else {
+    wrap.innerHTML = '<iframe src="'+embedUrl+'" width="100%" height="80" frameborder="0"'
+      +' allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"'
+      +' loading="lazy" style="border-radius:4px;display:block;"></iframe>';
+    wrap.style.display = 'block';
+    if (btn) btn.innerHTML = '&#9646;&#9646; Fermer';
   }
 }
 

@@ -4860,6 +4860,7 @@ function _renderAlbums() {
     if (canDo('edit')) actBtns += '<button class="a-btn-crud-edit" onclick="openAlbumModal(' + a.id + ')">' + AT('btn_edit') + '</button>';
     actBtns += '<button class="a-btn-sm ' + (active ? 'a-btn-danger' : 'a-btn-edit') + '" onclick="_toggleActive(\'album\',' + a.id + ')">' + (active ? AT('btn_deactivate') : AT('btn_activate')) + '</button>';
     if (canDo('delete')) actBtns += '<button class="a-btn-crud-del" onclick="deleteItem(\'album\',' + a.id + ')">' + AT('btn_delete') + '</button>';
+    var realCount = (DB.tracks||[]).filter(function(t){ return t.album === a.title && t.artist === a.artist; }).length;
     return '<tr>'
       + '<td style="width:20px;padding:4px 6px;"><input type="checkbox" id="_ac'+a.id+'" style="width:14px;height:14px;cursor:pointer;accent-color:#3a6fc7;" onclick="_aCheck()"></td>'
       + '<td style="width:40px;">' + imgSrc + '</td>'
@@ -4868,8 +4869,14 @@ function _renderAlbums() {
       + '<td class="editable" style="font-size:11px;" ondblclick="inlineEdit(this,\'album\',' + a.id + ',\'year\')">' + (a.year || '—') + '</td>'
       + '<td class="editable" style="font-size:11px;" ondblclick="inlineEdit(this,\'album\',' + a.id + ',\'genre\')">' + _esc(a.genre || '') + '</td>'
       + '<td style="font-size:10px;">' + _esc(a.label || '') + '</td>'
-      + '<td style="text-align:center;">' + (a.tracks || '—') + '</td>'
+      + '<td style="text-align:center;">'
+      +   '<span id="alb-trk-cnt-'+a.id+'" onclick="_toggleAlbTracks('+a.id+')" title="Gérer les morceaux"'
+      +   ' style="cursor:pointer;font-size:11px;font-weight:bold;color:#3a6fc7;user-select:none;">&#9660; '+realCount+'</span>'
+      + '</td>'
       + '<td style="white-space:nowrap;">' + actBtns + '</td>'
+      + '</tr>'
+      + '<tr id="alb-trk-row-'+a.id+'" style="display:none;">'
+      + '<td colspan="9" style="padding:0;background:#f4f6fb;border-bottom:2px solid #3a6fc7;"></td>'
       + '</tr>';
   }).join('');
 
@@ -4947,6 +4954,93 @@ function _addAlbum() {
   _renderAlbums();
 }
 
+// ── Gestion morceaux inline dans Albums ──────────────────────
+window._lastAlbPanel = null;
+
+function _toggleAlbTracks(albumId) {
+  var row = document.getElementById('alb-trk-row-' + albumId);
+  if (!row) return;
+  var td = row.querySelector('td');
+  if (row.style.display === 'none') {
+    row.style.display = '';
+    if (td) td.innerHTML = _buildAlbTracksHtml(albumId);
+  } else {
+    row.style.display = 'none';
+    if (td) td.innerHTML = '';
+  }
+}
+
+function _buildAlbTracksHtml(albumId) {
+  var alb = (DB.albums||[]).find(function(a){ return a.id === albumId; });
+  if (!alb) return '';
+  var tracks = (DB.tracks||[]).filter(function(t){ return t.album === alb.title && t.artist === alb.artist; });
+  var S = 'font-size:9px;border-radius:2px;cursor:pointer;padding:4px 10px;';
+  var trackRows = tracks.length ? tracks.map(function(t, ti) {
+    var sp = t.spotify ? '<span style="font-size:9px;color:#1ed760;background:rgba(30,215,96,0.08);border:1px solid rgba(30,215,96,0.2);padding:2px 7px;border-radius:2px;white-space:nowrap;">Spotify ✓</span>' : '';
+    return '<div style="display:flex;align-items:center;gap:12px;padding:9px 16px;border-bottom:1px solid #e8ecf0;background:#fff;">'
+      + '<span style="width:24px;text-align:center;font-size:11px;color:#aaa;flex-shrink:0;">' + (ti+1) + '</span>'
+      + '<div style="flex:1;min-width:0;">'
+      +   '<div style="font-size:13px;font-weight:600;color:#0a1628;">' + _esc(t.title||'') + '</div>'
+      +   '<div style="font-size:10px;color:#888;margin-top:2px;">'
+      +     (t.style ? _esc(t.style) + (t.duration ? ' · ' : '') : '')
+      +     (t.duration ? _esc(t.duration) : '')
+      +   '</div>'
+      + '</div>'
+      + sp
+      + '<div style="display:flex;gap:5px;flex-shrink:0;">'
+      + (canDo('edit') ? '<button onclick="window._lastAlbPanel='+albumId+';openTrackModal('+t.id+')" style="'+S+'border:1px solid #ddd;background:none;color:#0a1628;">✎ Modifier</button>' : '')
+      + (canDo('delete') ? '<button onclick="_albDeleteTrack('+t.id+','+albumId+')" style="'+S+'border:1px solid #f5c0c0;background:none;color:#c03020;font-weight:bold;">× Supprimer</button>' : '')
+      + '</div>'
+      + '</div>';
+  }).join('')
+  : '<div style="padding:12px 16px;font-size:12px;color:#aaa;font-style:italic;background:#fff;">Aucun morceau — ajoutez-en un ci-dessous.</div>';
+
+  var addRow = canDo('add')
+    ? '<div style="padding:10px 16px;background:#f5f7fa;border-top:1px solid #e0e0e0;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'
+    + '<span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#0a1628;font-weight:bold;flex-shrink:0;">+ Titre</span>'
+    + '<input type="text" id="nalbt-title-'+albumId+'" placeholder="Titre *" style="border:1px solid #ddd;padding:5px 9px;font-size:12px;border-radius:2px;flex:1;min-width:100px;">'
+    + '<input type="text" id="nalbt-style-'+albumId+'" placeholder="Style" style="border:1px solid #ddd;padding:5px 9px;font-size:12px;border-radius:2px;width:90px;flex-shrink:0;">'
+    + '<input type="text" id="nalbt-dur-'+albumId+'" placeholder="Durée" style="border:1px solid #ddd;padding:5px 9px;font-size:12px;border-radius:2px;width:65px;flex-shrink:0;">'
+    + '<input type="text" id="nalbt-sp-'+albumId+'" placeholder="URL Spotify" style="border:1px solid #ddd;padding:5px 9px;font-size:12px;border-radius:2px;width:150px;flex-shrink:0;">'
+    + '<button onclick="_albAddTrack('+albumId+')" style="background:#0a1628;border:none;color:#fff;font-size:9px;letter-spacing:2px;padding:6px 14px;cursor:pointer;text-transform:uppercase;border-radius:2px;white-space:nowrap;flex-shrink:0;">Ajouter</button>'
+    + '</div>'
+    : '';
+
+  return '<div style="border-left:3px solid #3a6fc7;">' + trackRows + addRow + '</div>';
+}
+
+function _albAddTrack(albumId) {
+  if (!canDo('add')) return;
+  var alb = (DB.albums||[]).find(function(a){ return a.id === albumId; });
+  if (!alb) return;
+  var g = function(sfx){ return (document.getElementById('nalbt-'+sfx+'-'+albumId)||{value:''}).value.trim(); };
+  var title = g('title');
+  if (!title) { alert(AT('alert_title_req')); return; }
+  if (!DB.tracks) DB.tracks = [];
+  DB.tracks.push({ id: Date.now(), title: title, artist: alb.artist, album: alb.title,
+    style: g('style'), duration: g('dur'), spotify: g('sp'), category: 'traditional', disabled: false });
+  saveData(DB);
+  var row = document.getElementById('alb-trk-row-'+albumId);
+  if (row) { var td = row.querySelector('td'); if (td) td.innerHTML = _buildAlbTracksHtml(albumId); }
+  var cnt = document.getElementById('alb-trk-cnt-'+albumId);
+  if (cnt) cnt.textContent = '▼ ' + (DB.tracks||[]).filter(function(t){ return t.album===alb.title && t.artist===alb.artist; }).length;
+  _refreshDashboard();
+}
+
+function _albDeleteTrack(trackId, albumId) {
+  if (!confirm(AT('alert_confirm_del'))) return;
+  DB.tracks = (DB.tracks||[]).filter(function(x){ return x.id !== trackId; });
+  saveData(DB);
+  var row = document.getElementById('alb-trk-row-'+albumId);
+  if (row) { var td = row.querySelector('td'); if (td) td.innerHTML = _buildAlbTracksHtml(albumId); }
+  var alb = (DB.albums||[]).find(function(a){ return a.id === albumId; });
+  if (alb) {
+    var cnt = document.getElementById('alb-trk-cnt-'+albumId);
+    if (cnt) cnt.textContent = '▼ ' + (DB.tracks||[]).filter(function(t){ return t.album===alb.title && t.artist===alb.artist; }).length;
+  }
+  _refreshDashboard();
+}
+
 // ═══════════════════════════════════════════════════════════
 // TRACKS
 // ═══════════════════════════════════════════════════════════
@@ -4983,6 +5077,7 @@ function openTrackModal(id) {
       _mField(AT('lbl_category'), 'mt-category', 'select', item ? item.category : 'traditional', {options: catOptions})
     ) +
     _mField(AT('lbl_url'), 'mt-url', 'text', item ? (item.url || item.ytId || '') : '') +
+    _mField('URL Spotify', 'mt-spotify', 'text', item ? (item.spotify || '') : '') +
     _mImageField(imgSrc, item ? (item.cover || '') : '');
 
   document.getElementById('edit-modal').classList.add('open');
@@ -5010,11 +5105,21 @@ function _saveTrackModal() {
   item.style    = _mVal('mt-style');
   item.category = _mVal('mt-category');
   item.url      = _mVal('mt-url');
+  item.spotify  = _mVal('mt-spotify');
 
   _persistModalImage(item);
 
   saveData(DB);
   closeEditModal();
+  // Rafraîchir le panneau Albums si ouvert depuis Albums
+  if (window._lastAlbPanel) {
+    var _panRow = document.getElementById('alb-trk-row-' + window._lastAlbPanel);
+    if (_panRow && _panRow.style.display !== 'none') {
+      var _td = _panRow.querySelector('td');
+      if (_td) _td.innerHTML = _buildAlbTracksHtml(window._lastAlbPanel);
+    }
+    window._lastAlbPanel = null;
+  }
   _renderTracks();
   _refreshDashboard();
 }

@@ -3673,6 +3673,22 @@ nav.scrolled .hamburger:not(.open):active {
 .ap-track-sp { background: rgba(30,215,96,0.12); color: #1ed760; border: 1px solid rgba(30,215,96,0.25); }
 .ap-track-sp:hover { background: rgba(30,215,96,0.25); color: #1ed760 !important; }
 
+/* ── Bouton Écouter inline par morceau ── */
+.ap-sp-btn {
+  font-family: Arial,sans-serif; font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  padding: 5px 10px; border-radius: 2px; cursor: pointer; white-space: nowrap;
+  background: rgba(30,215,96,0.10); color: #1ed760;
+  border: 1px solid rgba(30,215,96,0.22);
+  transition: background 0.18s, color 0.18s;
+  flex-shrink: 0;
+}
+.ap-sp-btn:hover { background: rgba(30,215,96,0.22); }
+.ap-sp-embed-wrap { padding: 0 0 10px 44px; }
+@media (max-width: 600px) {
+  .ap-sp-btn { font-size: 8px; padding: 4px 7px; }
+  .ap-sp-embed-wrap { padding-left: 0; }
+}
+
 /* ========== MOTEUR DE RECHERCHE ========== */
 /* ── SEARCH DROPDOWN ── */
 #search-overlay {
