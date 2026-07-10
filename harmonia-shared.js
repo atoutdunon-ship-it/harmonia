@@ -8120,30 +8120,6 @@ function deleteEvt(id) {
   saveData(DB); renderEvts();
 }
 
-function openSpotifyEmbed(url) {
-  if (!url) return;
-
-  var embedUrl = url.replace(/https?:\/\/open\.spotify\.com\/(?:intl-\w+\/)?/, 'https://open.spotify.com/embed/');
-  var modal = document.getElementById('sp-embed-modal');
-  if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'sp-embed-modal';
-    modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,5,15,0.88);z-index:99999;display:flex;align-items:center;justify-content:center;';
-    modal.innerHTML = ''
-      + '<div style="width:min(500px,92vw);background:#0a1628;border:1px solid rgba(30,215,96,0.25);border-radius:10px;overflow:hidden;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.7);">'
-      + '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.06);">'
-      + '<span style="font-family:Arial;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(30,215,96,0.8);">&#9654; SPOTIFY</span>'
-      + '<button onclick="document.getElementById(\'sp-embed-modal\').remove()" style="background:none;border:none;color:var(--gray);font-size:18px;cursor:pointer;line-height:1;padding:0 2px;" title="Fermer">&#10005;</button>'
-      + '</div>'
-      + '<iframe id="sp-embed-frame" style="display:block;" src="" width="100%" height="352" frameborder="0" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>'
-      + '</div>';
-    modal.addEventListener('click', function(e){ if(e.target===modal) modal.remove(); });
-    document.body.appendChild(modal);
-  }
-  document.getElementById('sp-embed-frame').src = embedUrl + '?utm_source=generator&theme=0';
-  modal.style.display = 'flex';
-}
-
 function refreshPLinkItems() {
   const sel = document.getElementById('plink-item');
   if (!sel) return;
@@ -8827,9 +8803,6 @@ function openArtistPage(id) {
             +   (t.style ? '<span class="ap-track-genre">'+esc(t.style)+'</span>' : '')
             + '</div>'
             + '<span class="ap-track-dur">'+esc(t.duration||'')+'</span>'
-            + '<div class="ap-track-links">'
-            +   (spUrl ? '<button class="ap-track-btn ap-track-sp" onclick="openSpotifyEmbed(\''+spUrl+'\')" title="Écouter sur Spotify">&#9654; Écouter</button>' : '')
-            + '</div>'
             + '</div>';
         }).join('');
       } else {
@@ -8838,13 +8811,9 @@ function openArtistPage(id) {
         if (discAlbum && discAlbum.tracks && discAlbum.tracks.length) {
           tracksHtml = discAlbum.tracks.map(function(t, ti) {
             var tTitle = typeof t === 'object' ? (t.title || '') : t;
-            var spUrl  = (typeof t === 'object' ? t.spotify : '') || al.spotify || a.spotify || '';
             return '<div class="ap-track-row">'
               + '<span class="ap-track-num">'+(ti+1)+'</span>'
               + '<div class="ap-track-info"><span class="ap-track-title">'+esc(tTitle)+'</span></div>'
-              + '<div class="ap-track-links">'
-              +   (spUrl ? '<button class="ap-track-btn ap-track-sp" onclick="openSpotifyEmbed(\''+spUrl+'\')" title="Écouter sur Spotify">&#9654; Écouter</button>' : '')
-              + '</div>'
               + '</div>';
           }).join('');
         } else {
@@ -8860,10 +8829,6 @@ function openArtistPage(id) {
         +     '<div class="ap-album-sub">'+al.year+' · '+esc(al.genre||'')+(al.label?' · '+esc(al.label):'')+'</div>'
         +     (al.desc ? '<div class="ap-album-desc-acc">'+esc(al.desc)+'</div>' : '')
         +   '</div>'
-        +   '<div class="ap-album-links">'
-        +     (function(){ var _spUrl = al.spotify || a.spotify || '';
-                return _spUrl ? '<button class="ap-track-btn ap-track-sp" onclick="event.stopPropagation();openSpotifyEmbed(\''+_spUrl+'\')" title="Écouter sur Spotify">&#9654; Écouter</button>' : ''; })()
-        +   '</div>'
         +   '<span class="ap-album-chevron">▾</span>'
         + '</div>'
         + '<div class="ap-album-tracks" style="display:none;">'
@@ -8871,7 +8836,6 @@ function openArtistPage(id) {
         +     '<span style="width:32px;">#</span>'
         +     '<span style="flex:1;">Titre</span>'
         +     '<span>Durée</span>'
-        +     '<span>Spotify</span>'
         +   '</div>'
         +   tracksHtml
         + '</div>'
