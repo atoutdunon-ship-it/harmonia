@@ -9205,13 +9205,10 @@ function openArtistPage(id) {
     var _disabledAlbumTitles = {};
     _disabledAlbums.forEach(function(al){ _disabledAlbumTitles[al.title] = true; });
     // Tri : plus récent d'abord
-    // Exclure : vidéos désactivées individuellement OU rattachées à un album désactivé
-    // Exception : le superadmin voit tout avec badge
-    var _isSA = isSuperAdmin();
+    // Exclure complètement : vidéos désactivées individuellement OU rattachées à un album désactivé
     var sorted = (a.youtubeVideos||[]).filter(function(v){
-      var _isDisabled = (v.disabled === true) || (v.album && _disabledAlbumTitles[v.album]);
-      if (_isDisabled && !_isSA) return false;
-      v._adminDisabled = _isDisabled; // marquer pour badge
+      if (v.disabled === true) return false;
+      if (v.album && _disabledAlbumTitles[v.album]) return false;
       return true;
     }).slice().sort(function(va, vb){
       return _clipYear(vb) - _clipYear(va);
@@ -9228,16 +9225,13 @@ function openArtistPage(id) {
       var cards = byAlbum[alb].map(function(item){
         var v = item.v, i = item.i;
         var thumb = 'https://img.youtube.com/vi/'+v.ytId+'/hqdefault.jpg';
-        var _disabledStyle = v._adminDisabled ? ' style="opacity:0.45;"' : '';
-        var _disabledBadge = v._adminDisabled ? '<div class="admin-disabled-badge">DÉSACTIVÉ</div>' : '';
-        return '<div class="ap-yt-card"'+_disabledStyle+' id="ytcard-'+i+'-'+id+'" onclick="playArtistYT(this.dataset.ytid,this.id)" data-ytid="'+v.ytId+'">'
+        return '<div class="ap-yt-card" id="ytcard-'+i+'-'+id+'" onclick="playArtistYT(this.dataset.ytid,this.id)" data-ytid="'+v.ytId+'">'
           + '<div class="ap-yt-thumb">'
           +   '<img src="'+thumb+'" alt="'+esc(v.title)+'" loading="lazy" onerror="this.onerror=null;this.style.opacity=\'0\'">'
           +   '<div class="ap-yt-play">'
           +     '<div class="ap-yt-play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>'
           +   '</div>'
           +   '<div class="ap-yt-overlay"><span class="ap-yt-overlay-title">'+esc(v.title)+'</span></div>'
-          +   _disabledBadge
           + '</div>'
           + '</div>';
       }).join('');
@@ -9635,7 +9629,12 @@ function closeArtistPage() {
 function playArtistYT(ytId, cardId) {
   var card = document.getElementById(cardId);
   if (!card) return;
-  card.innerHTML = '<div class="ap-yt-iframe-wrap"><iframe src="https://www.youtube.com/embed/'+ytId+'?autoplay=1&rel=0" allow="autoplay;encrypted-media" allowfullscreen></iframe></div>';
+  var src = 'https://www.youtube.com/embed/' + ytId + '?autoplay=1&rel=0&playsinline=1&enablejsapi=1';
+  card.innerHTML = '<div class="ap-yt-iframe-wrap">'
+    + '<iframe src="' + src + '" '
+    + 'allow="autoplay; encrypted-media; picture-in-picture" '
+    + 'allowfullscreen playsinline></iframe>'
+    + '</div>';
 }
 
 // ========================

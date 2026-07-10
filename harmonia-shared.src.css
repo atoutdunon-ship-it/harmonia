@@ -1334,6 +1334,21 @@
     text-decoration: none; text-transform: uppercase;
   }
   .footer-legal a:hover { color: var(--accent2); }
+
+  .footer-credits {
+    font-family: 'Arial', sans-serif; font-size: 9px;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: rgba(255,255,255,0.18);
+    text-align: center;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .footer-credits a {
+    color: rgba(255,255,255,0.28);
+    text-decoration: none;
+  }
+  .footer-credits a:hover { color: rgba(255,255,255,0.55); }
   @media (max-width: 768px) {
     .legal-box { padding: 40px 24px 32px; }
     .legal-h1 { font-size: 20px; }
@@ -4219,14 +4234,14 @@ body.edit-mode-active [data-item-type] > .item-toggle-wrap {
 
 /* ── Mobile (≤ 640px) ── */
 @media (max-width: 640px) {
-  /* Base — padding top 80px pour compenser la nav fixe (56px + marge) */
-  section { padding: 80px 20px 60px !important; }
+  /* Base — padding top compense la nav fixe + safe-area iOS */
+  section { padding: calc(80px + max(0px, env(safe-area-inset-top))) 20px 60px !important; }
   body    { font-size: 14px; }
 
   /* Nav */
-  nav     { padding: 0 16px !important; height: 56px; }
+  nav     { padding: 0 16px !important; height: calc(56px + max(0px, env(safe-area-inset-top))); }
   .nav-logo img { height: 20px !important; }
-  .nav-links { top: 56px; }
+  .nav-links { top: calc(56px + max(0px, env(safe-area-inset-top))); }
 
   /* Hero */
   .hero-content   { padding: 80px 20px 48px !important; }
@@ -4437,9 +4452,10 @@ html { height: -webkit-fill-available; }
   #cart-sidebar {
     padding-bottom: env(safe-area-inset-bottom, 0);
   }
-  /* Nav hauteur safe-area en haut */
+  /* Nav hauteur safe-area en haut — compense la hauteur fixe */
   nav {
     padding-top: max(0px, env(safe-area-inset-top));
+    height: calc(64px + max(0px, env(safe-area-inset-top)));
   }
   /* Boutons tactiles nav : taille minimum Apple HIG */
   .hamburger, .nav-connect-btn, .nav-search-btn, .nav-cart-btn, #mobile-connect-li button {
