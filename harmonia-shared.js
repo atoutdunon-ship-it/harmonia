@@ -1659,20 +1659,16 @@ try { applyMaintenanceMode(); } catch(e) {}
   if (changed) saveData(DB);
 })();
 
-(function migrateAllArtistsV11() {
-  if (DB._mediaV >= 11) return;
+(function restoreMissingAlbumsAllArtists() {
   if (!DB.albums) DB.albums = [];
   if (!DB.tracks) DB.tracks = [];
   var changed = false;
 
   defaultAlbums().forEach(function(def) {
-    var stored = DB.albums.find(function(a){ return a.id === def.id; });
-    if (!stored) {
+    if (def.artist === 'Elida Almeida') return;
+    if (!DB.albums.find(function(a){ return a.id === def.id; })) {
       DB.albums.push(JSON.parse(JSON.stringify(def)));
       changed = true;
-    } else {
-      if (def.tracklist) { stored.tracklist = def.tracklist; changed = true; }
-      if (def.spotify && !stored.spotify) { stored.spotify = def.spotify; changed = true; }
     }
   });
 
@@ -1682,11 +1678,11 @@ try { applyMaintenanceMode(); } catch(e) {}
       DB.tracks.push(JSON.parse(JSON.stringify(def)));
       changed = true;
     } else {
-      if (def.spotify && !stored.spotify) { stored.spotify = def.spotify; changed = true; }
+
       if (def.ytId  && !stored.ytId)  { stored.ytId  = def.ytId;  changed = true; }
+      if (def.spotify && !stored.spotify) { stored.spotify = def.spotify; changed = true; }
     }
   });
-  DB._mediaV = 11;
   if (changed) saveData(DB);
 })();
 

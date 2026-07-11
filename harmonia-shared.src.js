@@ -1704,38 +1704,33 @@ try { applyMaintenanceMode(); } catch(e) {}
   if (changed) saveData(DB);
 })();
 
-// ── Migration V11 : synchronisation universelle albums + morceaux (tous artistes) ──────
-// Tourne une seule fois (gate _mediaV >= 11).
-// Garantit que chaque album et morceau de defaultAlbums()/defaultTracks() est présent
-// dans DB.albums / DB.tracks, quel que soit l'artiste — actuel ou futur.
-(function migrateAllArtistsV11() {
-  if (DB._mediaV >= 11) return;
+// ── Garde-fou universel : restaure les albums+morceaux manquants pour tous les artistes ──
+// Tourne à chaque chargement de page — sans gate de version.
+// Couvre les artistes actuels ET futurs. Ne touche pas aux albums Elida (gérés par V8).
+(function restoreMissingAlbumsAllArtists() {
   if (!DB.albums) DB.albums = [];
   if (!DB.tracks) DB.tracks = [];
   var changed = false;
-  // ── Albums ──
+  // ── Albums : ajouter tout album absent de DB.albums (hors Elida Almeida gérée par V8) ──
   defaultAlbums().forEach(function(def) {
-    var stored = DB.albums.find(function(a){ return a.id === def.id; });
-    if (!stored) {
+    if (def.artist === 'Elida Almeida') return; // Elida gérée séparément
+    if (!DB.albums.find(function(a){ return a.id === def.id; })) {
       DB.albums.push(JSON.parse(JSON.stringify(def)));
       changed = true;
-    } else {
-      if (def.tracklist) { stored.tracklist = def.tracklist; changed = true; }
-      if (def.spotify && !stored.spotify) { stored.spotify = def.spotify; changed = true; }
     }
   });
-  // ── Morceaux ──
+  // ── Morceaux : ajouter tout morceau absent de DB.tracks ──
   defaultTracks().forEach(function(def) {
     var stored = DB.tracks.find(function(t){ return t.id === def.id; });
     if (!stored) {
       DB.tracks.push(JSON.parse(JSON.stringify(def)));
       changed = true;
     } else {
-      if (def.spotify && !stored.spotify) { stored.spotify = def.spotify; changed = true; }
+      // Compléter ytId/spotify si manquants (sans écraser)
       if (def.ytId  && !stored.ytId)  { stored.ytId  = def.ytId;  changed = true; }
+      if (def.spotify && !stored.spotify) { stored.spotify = def.spotify; changed = true; }
     }
   });
-  DB._mediaV = 11;
   if (changed) saveData(DB);
 })();
 
