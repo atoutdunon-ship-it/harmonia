@@ -1704,6 +1704,41 @@ try { applyMaintenanceMode(); } catch(e) {}
   if (changed) saveData(DB);
 })();
 
+// ── Migration V11 : synchronisation universelle albums + morceaux (tous artistes) ──────
+// Tourne une seule fois (gate _mediaV >= 11).
+// Garantit que chaque album et morceau de defaultAlbums()/defaultTracks() est présent
+// dans DB.albums / DB.tracks, quel que soit l'artiste — actuel ou futur.
+(function migrateAllArtistsV11() {
+  if (DB._mediaV >= 11) return;
+  if (!DB.albums) DB.albums = [];
+  if (!DB.tracks) DB.tracks = [];
+  var changed = false;
+  // ── Albums ──
+  defaultAlbums().forEach(function(def) {
+    var stored = DB.albums.find(function(a){ return a.id === def.id; });
+    if (!stored) {
+      DB.albums.push(JSON.parse(JSON.stringify(def)));
+      changed = true;
+    } else {
+      if (def.tracklist) { stored.tracklist = def.tracklist; changed = true; }
+      if (def.spotify && !stored.spotify) { stored.spotify = def.spotify; changed = true; }
+    }
+  });
+  // ── Morceaux ──
+  defaultTracks().forEach(function(def) {
+    var stored = DB.tracks.find(function(t){ return t.id === def.id; });
+    if (!stored) {
+      DB.tracks.push(JSON.parse(JSON.stringify(def)));
+      changed = true;
+    } else {
+      if (def.spotify && !stored.spotify) { stored.spotify = def.spotify; changed = true; }
+      if (def.ytId  && !stored.ytId)  { stored.ytId  = def.ytId;  changed = true; }
+    }
+  });
+  DB._mediaV = 11;
+  if (changed) saveData(DB);
+})();
+
 // ── Garde-fou : restaure les albums Elida supprimés accidentellement ──────────
 // Tourne à chaque chargement de page — sans gate de version.
 (function restoreMissingElidaAlbums() {
